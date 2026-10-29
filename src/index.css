@@ -1,0 +1,302 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Poppins", "Inter", ui-sans-serif, sans-serif;
+  --color-sipec-primary: #1e3a5f;
+  --color-sipec-secondary: #2a7de1;
+  --color-sipec-gold: #d4a017;
+  --color-sipec-success: #4caf50;
+  --color-sipec-danger: #ef4444;
+  --color-sipec-light: #ffffff;
+  --color-sipec-light-alt: #f1f5f9;
+  --color-sipec-text: #475569;
+  --color-sipec-border: #e2e8f0;
+  --color-sipec-hover: #f1f5f9;
+  --color-sipec-dark: #0b1120;
+  --color-sipec-dark-alt: #111827;
+  --color-sipec-card-dark: #1e293b;
+  --color-sipec-text-dark: #cbd5e1;
+  --color-sipec-border-dark: #334155;
+  --color-sipec-hover-dark: #1e293b;
+  --radius-sipec: 24px;
+  --shadow-sipec: 0 10px 35px rgba(15, 23, 42, 0.10);
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-fade-in {
+  animation: hero-fade-in 700ms ease-out both;
+}
+
+.hero-slide-up {
+  animation: hero-slide-up 800ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.hero-cta-in {
+  animation: hero-slide-up 650ms ease-out both;
+}
+
+.hero-atmosphere {
+  background-image:
+    radial-gradient(ellipse at 48% 25%, rgba(14, 165, 233, 0.2), transparent 54%),
+    radial-gradient(ellipse at 85% 80%, rgba(245, 158, 11, 0.08), transparent 38%),
+    linear-gradient(135deg, #0f172a 0%, #082f49 54%, #0f172a 100%);
+}
+
+.hero-mouse {
+  display: flex;
+  width: 14px;
+  height: 22px;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 999px;
+  padding-top: 4px;
+}
+
+.hero-mouse span {
+  width: 2px;
+  height: 5px;
+  border-radius: 999px;
+  background: #fff;
+  animation: hero-scroll-dot 1.6s ease-in-out infinite;
+}
+
+.hero-scroll svg {
+  animation: hero-scroll-arrow 1.6s ease-in-out infinite;
+}
+
+.impact-card {
+  animation: hero-slide-up 650ms ease-out both;
+}
+
+.about-card {
+  animation: hero-slide-up 650ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.services-card {
+  animation: hero-slide-up 650ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.department-card {
+  animation: hero-slide-up 700ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+@keyframes hero-scroll-dot {
+  0%, 100% { opacity: 0.45; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+
+@keyframes hero-scroll-arrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-in,
+  .hero-slide-up,
+  .hero-cta-in,
+  .impact-card,
+  .about-card,
+  .services-card,
+  .department-card,
+  .hero-mouse span,
+  .hero-scroll svg {
+    animation: none;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --sipec-page: #f8fafc;
+    --sipec-page-alt: #f1f5f9;
+    --sipec-card: #ffffff;
+    --sipec-title: #1e293b;
+    --sipec-text: #475569;
+    --sipec-text-secondary: #64748b;
+    --sipec-border: #e2e8f0;
+    --sipec-hover: #f1f5f9;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+    --sipec-page: #0b1120;
+    --sipec-page-alt: #111827;
+    --sipec-card: #1e293b;
+    --sipec-title: #f8fafc;
+    --sipec-text: #cbd5e1;
+    --sipec-text-secondary: #94a3b8;
+    --sipec-border: #334155;
+    --sipec-hover: #1e293b;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: var(--sipec-page);
+    color: var(--sipec-text);
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+  button, a { touch-action: manipulation; }
+  :focus-visible { outline: 3px solid #2a7de1; outline-offset: 3px; }
+  h1, h2, h3 { font-family: "Poppins", "Inter", sans-serif; }
+  h1 { font-size: 40px; line-height: 1.08; }
+  h2 { font-size: 36px; line-height: 1.12; }
+  @media (min-width: 768px) { h1 { font-size: 56px; } h2 { font-size: 48px; } }
+  @media (min-width: 1024px) { h1 { font-size: 72px; } }
+}
+
+@layer components {
+  .sipec-section {
+    padding-block: 60px;
+  }
+
+  .sipec-card {
+    border-radius: 24px;
+    border: 1px solid var(--sipec-border);
+    background: var(--sipec-card);
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.10);
+    transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+  }
+
+  .sipec-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 50px rgba(15, 23, 42, 0.16);
+  }
+
+  .sipec-title { color: var(--sipec-title); }
+  .sipec-muted { color: var(--sipec-text); }
+
+  .sipec-button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    border-radius: 9999px;
+    background: #2a7de1;
+    padding: 0.75rem 1.25rem;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(42, 125, 225, 0.22);
+    transition: transform 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .sipec-button-primary:hover { transform: scale(1.03); background: #0284c7; }
+
+  .sipec-button-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    border-radius: 9999px;
+    border: 1px solid var(--sipec-border);
+    background: transparent;
+    padding: 0.75rem 1.25rem;
+    color: var(--sipec-title);
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: transform 200ms ease, background-color 200ms ease;
+  }
+
+  .sipec-button-secondary:hover { transform: translateY(-2px); background: var(--sipec-hover); }
+
+  .sipec-button-gold {
+    background: #d4a017;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(212, 160, 23, 0.20);
+  }
+
+  .sipec-badge { display: inline-flex; align-items: center; border-radius: 9999px; padding: 0.375rem 0.625rem; font-size: 0.75rem; font-weight: 800; }
+  .sipec-badge-live { background: #ef4444; color: #ffffff; }
+  .sipec-badge-youth { background: #f97316; color: #ffffff; }
+  .sipec-badge-choir { background: #8b5cf6; color: #ffffff; }
+  .sipec-badge-media { background: #2a7de1; color: #ffffff; }
+  .sipec-badge-intercession { background: #d4a017; color: #ffffff; }
+  .sipec-badge-children { background: #22c55e; color: #ffffff; }
+
+  .fade-up { animation: hero-slide-up 700ms cubic-bezier(0.2, 0.75, 0.25, 1) both; }
+  .zoom-in { animation: hero-fade-in 600ms ease-out both; }
+}
+
+@media (min-width: 768px) {
+  .sipec-section { padding-block: 80px; }
+}
+
+@media (min-width: 1024px) {
+  .sipec-section { padding-block: 120px; }
+}
+
+/* Scrollbar Minimaliste */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0284C7;
+}
+
+/* Squelette de chargement épuré */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.4) 25%, rgba(203, 213, 225, 0.7) 50%, rgba(226, 232, 240, 0.4) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.5) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.5) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

@@ -1,0 +1,17 @@
+import React, { useEffect, useState } from 'react';
+import { Edit3, Plus, Trash2, UploadCloud } from 'lucide-react';
+import { AdminLayout, AdminPageHeader } from '../../components/admin/AdminLayout';
+import { deleteAdminItem, getAdminCollection, uploadAdminMedia } from '../../services/adminService';
+
+export interface CrudPageProps { table: string; title: string; description: string; columns: {key:string; label:string}[] }
+export const AdminCrudPage: React.FC<CrudPageProps> = ({ table, title, description, columns }) => {
+  const [rows,setRows] = useState<Record<string, unknown>[]>([]);
+  const [uploading,setUploading] = useState(false);
+  useEffect(() => { getAdminCollection<Record<string, unknown>>(table).then(setRows).catch(()=>setRows([])); }, [table]);
+  const remove = async (id: string) => { await deleteAdminItem(table,id); setRows(current=>current.filter(row=>String(row.id)!==id)); };
+  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => { const file=event.target.files?.[0]; if(!file)return; setUploading(true); await uploadAdminMedia(file,table); setUploading(false); };
+  return <AdminLayout><AdminPageHeader title={title} description={description} action={<button className="inline-flex items-center gap-2 rounded-full bg-[#2a7de1] px-5 py-3 text-sm font-bold text-white shadow-lg"><Plus className="h-4 w-4"/>Ajouter</button>} />
+    {['gallery'].includes(table) && <label className="mb-5 flex cursor-pointer items-center gap-3 rounded-[24px] border border-dashed border-[#2a7de1]/50 bg-white p-5 text-sm font-bold text-[#2a7de1] dark:bg-[#1e293b]"><UploadCloud />{uploading?'Importation…':'Importer des médias'}<input type="file" accept="image/*,video/*" className="hidden" onChange={upload}/></label>}
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1e293b]"><div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left"><thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wider text-slate-500 dark:border-white/10 dark:bg-white/[.03]"><tr>{columns.map(column=> <th key={column.key} className="px-5 py-4">{column.label}</th>)}<th className="px-5 py-4 text-right">Actions</th></tr></thead><tbody className="divide-y divide-slate-100 dark:divide-white/10">{rows.map(row=><tr key={String(row.id)} className="hover:bg-slate-50 dark:hover:bg-white/[.03]">{columns.map(column=>{const value=row[column.key]; return <td key={column.key} className="px-5 py-4 text-sm">{typeof value==='boolean' ? <span className={`sipec-badge ${value?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-600'}`}>{value?'Actif':'Inactif'}</span>:String(value ?? '—')}</td>})}<td className="px-5 py-4"><div className="flex justify-end gap-2"><button aria-label="Modifier" className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:border-[#2a7de1] hover:text-[#2a7de1]"><Edit3 className="h-4 w-4"/></button><button onClick={()=>remove(String(row.id))} aria-label="Supprimer" className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:border-red-400 hover:text-red-500"><Trash2 className="h-4 w-4"/></button></div></td></tr>)}</tbody></table></div>{rows.length===0&&<p className="p-10 text-center text-sm text-slate-400">Aucune donnée à afficher.</p>}</div>
+  </AdminLayout>;
+};

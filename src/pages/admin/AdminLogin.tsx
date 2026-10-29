@@ -1,0 +1,16 @@
+import React, { useState } from 'react';
+import { Eye, EyeOff, LockKeyhole, ShieldCheck } from 'lucide-react';
+import { signInAdmin } from '../../services/adminService';
+
+export const AdminLogin: React.FC = () => {
+  const [show, setShow] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); const form = new FormData(event.currentTarget); setLoading(true); setError('');
+    const result = await signInAdmin(String(form.get('email')), String(form.get('password')));
+    setLoading(false);
+    if (result.error) setError(result.error.message || 'Identifiants incorrects.'); else { localStorage.setItem('sipec_admin_session', '1'); window.location.href = '/admin/dashboard'; }
+  };
+  return <main className="grid min-h-screen bg-[#f8fafc] lg:grid-cols-[1fr_520px]"><section className="hidden items-end bg-[#1e3a5f] p-14 text-white lg:flex" style={{backgroundImage:'linear-gradient(180deg, rgba(30,58,95,.55), rgba(11,17,32,.92)), url(https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1600&q=85)', backgroundSize:'cover'}}><div><ShieldCheck className="mb-6 h-12 w-12 text-[#d4a017]"/><h1 className="max-w-xl font-heading text-5xl font-bold leading-tight">Centre administratif SIPEC</h1><p className="mt-5 max-w-lg text-lg text-slate-200">Gérez les contenus, les médias et la diffusion de la communauté en toute sécurité.</p></div></section><section className="flex items-center justify-center p-6"><form onSubmit={submit} className="w-full max-w-md rounded-[24px] bg-white p-7 shadow-xl sm:p-10"><p className="text-sm font-bold text-[#2a7de1]">S.I.P.E.C ADMIN</p><h2 className="mt-3 font-heading text-3xl font-bold text-[#1e293b]">Connexion</h2><p className="mt-3 text-sm text-slate-500">Accédez à votre espace de gestion.</p><label className="mt-8 block text-sm font-semibold text-slate-700">Email<input required name="email" type="email" defaultValue="admin@sipec.org" className="mt-2 h-12 w-full rounded-xl border border-slate-200 px-4 outline-none focus:border-[#2a7de1] focus:ring-4 focus:ring-[#2a7de1]/10" /></label><label className="mt-5 block text-sm font-semibold text-slate-700">Mot de passe<div className="relative mt-2"><LockKeyhole className="absolute left-4 top-3.5 h-5 w-5 text-slate-400"/><input required name="password" type={show ? 'text' : 'password'} defaultValue="admin" className="h-12 w-full rounded-xl border border-slate-200 pl-12 pr-12 outline-none focus:border-[#2a7de1] focus:ring-4 focus:ring-[#2a7de1]/10"/><button type="button" onClick={() => setShow(!show)} className="absolute right-4 top-3 text-slate-400" aria-label="Afficher le mot de passe">{show ? <EyeOff /> : <Eye />}</button></div></label>{error && <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}<button disabled={loading} className="mt-7 h-12 w-full rounded-xl bg-[#2a7de1] font-bold text-white shadow-lg shadow-blue-500/20 disabled:opacity-60">{loading ? 'Connexion...' : 'Accéder à l’administration'}</button><a href="/" className="mt-6 block text-center text-sm font-semibold text-slate-500 hover:text-[#2a7de1]">Retour au site</a></form></section></main>;
+};
