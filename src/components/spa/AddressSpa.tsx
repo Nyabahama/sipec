@@ -1,16 +1,194 @@
 import React from 'react';
-import { CalendarDays, Clock3, MapPin, Radio } from 'lucide-react';
+import { CalendarDays, Clock3, Radio } from 'lucide-react';
 import type { ChurchMeta } from '../../types/churchSpa';
-interface AddressSpaProps { contact: ChurchMeta['contact']; }
-const services = [{day:'Dimanche',time:'8h00 - 12h00',title:'Culte Principal',icon:CalendarDays},{day:'Jeudi',time:'18h00 - 20h00',title:'Étude Biblique',icon:Clock3},{day:'Vendredi',time:'22h30 - Fin',title:'Veillée de Prière',icon:Radio}];
-const leaders = [{name:'Pasteur Fondateur',role:'Responsable principal',initials:'PF'},{name:'Responsable accueil',role:'Bienvenue & visites',initials:'RA'},{name:'Responsable jeunesse',role:'Ministère des jeunes',initials:'RJ'},{name:'Responsable intercession',role:'Prières & veille',initials:'RI'}];
+import { FacebookPostCard } from './FacebookPostCard';
+
+interface AddressSpaProps {
+  contact: ChurchMeta['contact'];
+}
+
+const services = [
+  {
+    day: 'Dimanche',
+    time: '8h00 - 12h00',
+    title: 'Culte Principal',
+    icon: CalendarDays,
+    description:
+      'Le grand rassemblement dominical de toute la communauté S.I.P.E.C : louange vivante, adoration prophétique, proclamation puissante de la Parole de Dieu et ministère de prière pour les familles.',
+    mediaUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=85',
+    likes: 640,
+    comments: 82,
+    shares: 45,
+  },
+  {
+    day: 'Jeudi',
+    time: '18h00 - 20h00',
+    title: 'Étude Biblique',
+    icon: Clock3,
+    description:
+      'Un rendez-vous hebdomadaire d’enseignement biblique et de sanctification pour approfondir la saine doctrine, méditer les Écritures et bâtir une foi chrétienne inébranlable.',
+    mediaUrl: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=85',
+    likes: 380,
+    comments: 44,
+    shares: 21,
+  },
+  {
+    day: 'Vendredi',
+    time: '22h30 - Fin',
+    title: 'Veillée de Prière',
+    icon: Radio,
+    description:
+      'Une nuit d’intercession stratégique, de louange et de combat spirituel pour briser les liens, intercéder pour l’Église, les nations et voir la puissance divine se déployer.',
+    mediaUrl: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=1200&q=85',
+    likes: 510,
+    comments: 67,
+    shares: 39,
+  },
+];
+
+const leaders = [
+  {
+    name: 'Pasteur Fondateur',
+    role: 'Responsable principal',
+    initials: 'PF',
+    description:
+      'Visionnaire et berger principal de la S.I.P.E.C Siloam Kampala, portant la vision apostolique selon Jean 9:7 et guidant le peuple de Dieu avec amour, vérité et autorité spirituelle.',
+    mediaUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=85',
+    likes: 720,
+    comments: 94,
+    shares: 58,
+  },
+  {
+    name: 'Responsable accueil',
+    role: 'Bienvenue & visites',
+    initials: 'RA',
+    description:
+      'Dédié à l’accueil chaleureux de chaque membre et visiteur, veillant à ce que chacun se sente aimé, attendu et intégré dès ses premiers pas à l’église Siloam.',
+    mediaUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85',
+    likes: 390,
+    comments: 48,
+    shares: 22,
+  },
+  {
+    name: 'Responsable jeunesse',
+    role: 'Ministère des jeunes',
+    initials: 'RJ',
+    description:
+      'Mobilise, encadre et inspire la nouvelle génération à vivre pleinement sa foi, développer ses talents et impacter son environnement avec l’Évangile de Jésus-Christ.',
+    mediaUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=85',
+    likes: 460,
+    comments: 57,
+    shares: 31,
+  },
+  {
+    name: 'Responsable intercession',
+    role: 'Prières & veille',
+    initials: 'RI',
+    description:
+      'Coordonne les sentinelles de la prière et les chaînes d’intercession continues pour soutenir spirituellement l’assemblée, les requêtes et les programmes d’évangélisation.',
+    mediaUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=85',
+    likes: 430,
+    comments: 53,
+    shares: 27,
+  },
+];
+
 export const AddressSpa: React.FC<AddressSpaProps> = () => {
- const mapsUrl='https://www.google.com/maps/search/?api=1&query=Kirombe+Sambya+Kampala+Ouganda';
- return <section id="adresse" className="overflow-hidden bg-[#f6f8fb] text-slate-900 dark:bg-[#080b12] dark:text-white">
-  <div className="relative isolate min-h-[560px] overflow-hidden"><img src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=2000&q=90" alt="" className="absolute inset-0 -z-20 h-full w-full object-cover"/><div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/25"/><div className="mx-auto flex min-h-[560px] max-w-7xl items-center px-5 sm:px-8"><div className="max-w-2xl py-16"><span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[.2em] text-sky-300 backdrop-blur-md">SIPEC vous accueille</span><h1 className="mt-7 text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-7xl">Nous Contacter</h1><div className="mt-6 max-w-xl text-slate-200"><p className="text-lg leading-8 sm:text-xl">Nous serons heureux de vous accueillir, de répondre à vos questions et de prier avec vous.</p><p className="mt-4 flex items-center gap-2 text-sm font-semibold text-white"><MapPin size={17} className="text-sky-300"/> Nous sommes à Kirombe / Sambya, Kampala, Ouganda</p></div><div className="mt-9 flex flex-wrap gap-3"><a href={mapsUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-slate-950"><MapPin size={18}/> Planifier une visite</a><a href="#priere" className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md">Demander la prière</a></div></div></div></div>
-  <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-   <div className="mt-20"><h2 className="text-center text-3xl font-bold">Horaires des cultes</h2><div className="mt-8 grid gap-5 md:grid-cols-3">{services.map(({day,time,title,icon:Icon}) => <div key={day} className="rounded-[26px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-white/[.08] dark:bg-white/[.03]"><Icon className="text-sky-500"/><p className="mt-5 text-sm font-bold uppercase tracking-[.16em] text-sky-600">{day}</p><p className="mt-2 text-2xl font-bold">{time}</p><p className="mt-2 text-sm text-slate-500">{title}</p></div>)}</div></div>
-   <div className="mt-20"><div className="text-center"><p className="text-xs font-bold uppercase tracking-[.2em] text-sky-600">Notre équipe</p><h2 className="mt-3 text-3xl font-bold">Responsables SIPEC</h2></div><div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{leaders.map((leader) => <article key={leader.name} className="rounded-[26px] border border-slate-200 bg-white p-5 text-center dark:border-white/[.08] dark:bg-white/[.03]"><div className="mx-auto grid aspect-square w-full max-w-44 place-items-center rounded-full bg-gradient-to-br from-sky-100 via-white to-slate-200 text-3xl font-bold text-slate-700">{leader.initials}</div><h3 className="mt-5 font-bold">{leader.name}</h3><p className="mt-1 text-sm text-slate-500">{leader.role}</p><a href="mailto:contact@sipec-church.org" className="mt-5 block rounded-full border border-slate-200 py-2.5 text-sm font-semibold">Contacter</a></article>)}</div></div>
-  </div>
- </section>;
+  const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=Kirombe+Sambya+Kampala+Ouganda';
+
+  return (
+    <section id="adresse" className="overflow-hidden bg-[#F0F2F5] text-slate-900 dark:bg-[#0B1120] dark:text-white">
+      {/* 1. Badge d'Accueil & Contact (Standardisé Facebook) */}
+      <div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 sm:pt-16">
+        <div className="mb-6 text-center sm:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1877F2] shadow-sm dark:border-blue-900/60 dark:bg-slate-900 dark:text-blue-400">
+            SIPEC vous accueille
+          </span>
+          <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">
+            Nous Contacter
+          </h2>
+        </div>
+
+        <FacebookPostCard
+          authorName="S.I.P.E.C Siloam Kampala"
+          metadata="SIPEC vous accueille • Kampala"
+          content={`Nous serons heureux de vous accueillir, de répondre à vos questions et de prier avec vous.\n\n📍 Nous sommes à Kirombe / Sambya, Kampala, Ouganda.\n\nVenez célébrer avec nous chaque semaine ou contactez notre pastorale pour toute demande de prière.`}
+          mediaUrl="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1200&q=85"
+          mediaAlt="Sanctuaire SIPEC Kampala"
+          domain="SILOAMKAMPALA.ORG"
+          cardTitle="Nous Contacter — SIPEC vous accueille"
+          cardSubtitle="Kirombe / Sambya, Kampala, Ouganda"
+          amenCount={560}
+          commentsCount={64}
+          sharesCount={38}
+          actionLabel="Planifier une visite"
+          actionHref={mapsUrl}
+        />
+      </div>
+
+      {/* 2. Section Horaires des cultes (Badges Facebook standardisés) */}
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="mb-8 text-center sm:text-left">
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-[#1877F2]">
+            Rendez-vous spirituels
+          </p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Horaires des cultes
+          </h2>
+        </div>
+
+        <div className="space-y-6">
+          {services.map((service) => (
+            <FacebookPostCard
+              key={service.day}
+              authorName="S.I.P.E.C Siloam Kampala"
+              metadata={`${service.day} • ${service.time}`}
+              content={service.description}
+              mediaUrl={service.mediaUrl}
+              domain="SILOAMKAMPALA.ORG"
+              cardTitle={`${service.title} — ${service.day}`}
+              cardSubtitle={`Horaire officiel : ${service.time}`}
+              amenCount={service.likes}
+              commentsCount={service.comments}
+              sharesCount={service.shares}
+              actionLabel="Planifier une visite"
+              actionHref={mapsUrl}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 3. Section Notre équipe / Responsables SIPEC (Badges Facebook standardisés) */}
+      <div className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-8 text-center sm:text-left">
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-[#1877F2]">
+            Notre équipe
+          </p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Responsables SIPEC
+          </h2>
+        </div>
+
+        <div className="space-y-6">
+          {leaders.map((leader) => (
+            <FacebookPostCard
+              key={leader.name}
+              authorName={leader.name}
+              metadata={`${leader.role} • Responsables SIPEC`}
+              content={leader.description}
+              mediaUrl={leader.mediaUrl}
+              domain="SILOAMKAMPALA.ORG"
+              cardTitle={leader.name}
+              cardSubtitle={leader.role}
+              amenCount={leader.likes}
+              commentsCount={leader.comments}
+              sharesCount={leader.shares}
+              actionLabel="Contacter"
+              actionHref="mailto:contact@sipec-church.org"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };

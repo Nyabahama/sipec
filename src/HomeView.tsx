@@ -19,16 +19,8 @@ import { useLanguage } from './lib/language';
 import { localizeChurchSpaData } from './lib/localizeChurchSpaData';
 
 /**
- * Single Page Application (SPA) - Église Siloam (S.I.P.E.C)
- * 
- * Architecture & Contraintes respectées :
- * 1. Zéro Image IA : Uniquement des icônes SVG (Lucide) et des espaces réservés structurés avec bordures fines.
- * 2. Palette & Mode Sombre :
- *    - Mode Clair : bg-slate-50, cartes bg-white, texte text-slate-900, accents bg-sky-500.
- *    - Mode Sombre : dark:bg-slate-950, cartes dark:bg-slate-900, texte dark:text-slate-100, accents text-sky-400.
- * 3. Navigation Moderne : Barre fixe avec emplacement du logo, burger mobile, toggle clair/sombre.
- * 4. Architecture Données : Récupération dynamique typée avec hooks et Skeletons de chargement.
- * 5. Les 10 Pages / Onglets modulaires intégrés avec fluidité.
+ * S.I.P.E.C Siloam Kampala
+ * Arrière-plan général de site gris très clair (#F0F2F5) avec badges blancs épurés style Facebook
  */
 export const HomeView: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -41,33 +33,32 @@ export const HomeView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-sipec-light-alt text-sipec-text dark:bg-sipec-dark dark:text-sipec-text-dark font-sans tracking-tight antialiased selection:bg-sipec-secondary selection:text-white transition-colors duration-200 flex flex-col">
+    <div className="min-h-screen bg-[#F0F2F5] text-slate-900 dark:bg-[#0B1120] dark:text-white font-sans antialiased selection:bg-[#1877F2] selection:text-white transition-colors duration-200 flex flex-col">
       {/* Alerte discrète hors-ligne */}
       {isOffline && (
-        <aside aria-label="Statut réseau" className="bg-sky-500 text-white text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
+        <aside aria-label="Statut réseau" className="bg-[#1877F2] text-white text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
           <WifiOff className="w-3.5 h-3.5" />
           <span>{t('offline.message')}</span>
         </aside>
       )}
 
-      {/* Barre de Navigation Fixe avec Logo et Sélecteur Clair/Sombre */}
+      {/* 1. NAVBAR FACEBOOK UNIFIÉE (Barre fixe, recherche ovale, 5 onglets, cloche 20+, profil) */}
       <NavbarSpa
         theme={theme}
         onToggleTheme={toggleTheme}
         isLive={localizedData.meta.liveStatus.isLive}
       />
 
-      {/* Contenu Principal de la SPA */}
+      {/* Contenu Principal de la Plateforme (Conserve l'intégralité des données textuelles) */}
       <main className="flex-1">
         {loading ? (
-          /* États de chargement progressifs (Skeletons) */
           <SpaSkeletons />
         ) : (
-          /* Sections modulaires de la SPA */
           <>
             {/* 1. BIENVENUE (Hero) */}
             <HeroSpa
               meta={localizedData.meta}
+              backgroundImage={localizedData.meta.hero?.imageUrl}
               impact={{
                 members: null,
                 departments: localizedData.departments.length,
@@ -76,43 +67,43 @@ export const HomeView: React.FC = () => {
               }}
             />
 
-            {/* 2. À PROPOS DE NOUS */}
+            {/* 2. À PROPOS DE NOUS (Badges format Radio Okapi Facebook) */}
             <AboutSpa about={localizedData.about} />
 
-            {/* 3. NOTRE BIOS (Pasteur Fondateur) */}
+            {/* 3. NOTRE BIOS (Pasteur Fondateur & Vision Jean 9:7) */}
             <BioSpa founder={localizedData.founder} about={localizedData.about} />
 
             {/* 4. NOS SERVICES (Soutien Communautaire) */}
             <ServicesSpa services={localizedData.communityServices} />
 
-            {/* NOS DÉPARTEMENTS */}
+            {/* 5. NOS DÉPARTEMENTS (Badges format Radio Okapi Facebook) */}
             <DepartmentsSpa departments={localizedData.departments} />
 
-            {/* NOTRE GALERIE (Masonry Layout sans fausses images) */}
+            {/* 6. NOTRE GALERIE */}
             <GallerySpa items={localizedData.gallery} />
 
-            {/* LIVE & REDIFFUSIONS SIPEC */}
+            {/* 7. LIVE & REDIFFUSIONS SIPEC */}
             <LiveSpa streams={localizedData.liveStreams} />
 
-            {/* NOS PRÉDICATIONS (Sermons & Lecteur SVG Factice) */}
+            {/* 8. NOS PRÉDICATIONS */}
             <SermonsSpa sermons={localizedData.sermons} />
 
-            {/* NOTRE ADRESSE (Emplacement Physique Textuel) */}
+            {/* 9. NOTRE ADRESSE & CONTACT */}
             <AddressSpa contact={localizedData.meta.contact} />
 
-            {/* CONTACT (Formulaire Validé TypeScript) */}
+            {/* 10. CONTACT & DEMANDE DE PRIÈRE */}
             <ContactSpa />
           </>
         )}
       </main>
 
-      {/* Pied de Page Officiel */}
+      {/* 11. PIED DE PAGE OFFICIEL */}
       <FooterSpa meta={localizedData.meta} />
 
       {/* Bouton Flottant Retour en Haut */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0"
+        className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-[#1877F2] dark:hover:text-[#1877F2] border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5 active:translate-y-0"
         aria-label="Retour en haut de page"
         title="Remonter"
       >

@@ -32,6 +32,19 @@ export async function getAdminCollection<T>(table: string): Promise<T[]> {
   return (data ?? []) as T[];
 }
 
+export async function saveAdminItem(table: string, values: Record<string, unknown>, id?: string) {
+  if (!hasSupabase) {
+    throw new Error('Configurez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY pour enregistrer dans Supabase.');
+  }
+  const payload = { ...values, updated_at: new Date().toISOString() };
+  const query = id
+    ? supabase.from(table).update(payload).eq('id', id).select().single()
+    : supabase.from(table).insert(payload).select().single();
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+}
+
 export async function deleteAdminItem(table: string, id: string) {
   if (hasSupabase) {
     const { error } = await supabase.from(table).delete().eq('id', id);
@@ -42,9 +55,10 @@ export async function deleteAdminItem(table: string, id: string) {
 export async function uploadAdminMedia(file: File, folder = 'gallery') {
   if (!hasSupabase) return URL.createObjectURL(file);
   const path = `${folder}/${crypto.randomUUID()}-${file.name}`;
-  const { data, error } = await supabase.storage.from('sipec-media').upload(path, file, { cacheControl: '3600', upsert: false });
+  const bucket = folder === 'gallery' || folder === 'gallery_media' ? 'gallery' : folder;
+  const { data, error } = await supabase.storage.from(bucket).upload(path, file, { cacheControl: '3600', upsert: false });
   if (error) throw error;
-  const { data: publicUrl } = supabase.storage.from('sipec-media').getPublicUrl(data.path);
+  const { data: publicUrl } = supabase.storage.from(bucket).getPublicUrl(data.path);
   return publicUrl.publicUrl;
 }
 

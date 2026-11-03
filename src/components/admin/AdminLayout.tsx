@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { BookOpen, CalendarDays, ChevronRight, GalleryHorizontalEnd, LayoutDashboard, LogOut, Menu, Radio, Settings, Building2, Users, X } from 'lucide-react';
+import { BookOpen, CalendarDays, ChevronRight, GalleryHorizontalEnd, LayoutDashboard, LogOut, Menu, Radio, Settings, Building2, Users, X, Home, Info, UserRound, Music, MapPin } from 'lucide-react';
 import { signOutAdmin } from '../../services/adminService';
 
 const links = [
-  ['dashboard', 'Tableau de bord', LayoutDashboard], ['departments', 'Départements', Building2], ['gallery', 'Galerie', GalleryHorizontalEnd],
-  ['sermons', 'Prédications', BookOpen], ['live', 'Live TV', Radio], ['events', 'Événements', CalendarDays], ['users', 'Utilisateurs', Users], ['settings', 'Paramètres', Settings],
+  ['dashboard', 'Tableau de bord', LayoutDashboard], ['vitrine-badges', 'Badges Vitrine', LayoutDashboard], ['hero', 'Hero', Home], ['about', 'À propos', Info], ['founder', 'Visionnaire', UserRound], ['departments', 'Départements', Building2], ['choirs', 'Chorales', Music], ['gallery', 'Galerie', GalleryHorizontalEnd],
+  ['gallery-media', 'Médias galerie', GalleryHorizontalEnd], ['sermons', 'Prédications', BookOpen], ['live', 'Live TV', Radio], ['events', 'Événements', CalendarDays], ['contact', 'Contact', MapPin], ['users', 'Utilisateurs', Users], ['settings', 'Paramètres', Settings],
 ] as const;
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

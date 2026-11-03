@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, X, Sun, Moon, Radio } from 'lucide-react';
+import {
+  Home,
+  Church,
+  Users,
+  PlaySquare,
+  MapPin,
+  Search,
+  LayoutGrid,
+  MessageCircle,
+  Bell,
+  Sun,
+  Moon,
+  Menu,
+  X,
+} from 'lucide-react';
 import type { Theme } from '../../hooks/useTheme';
 import churchLogo from '../../assets/siloam.jpeg';
+import founderPortrait from '../../assets/apo.jpeg';
 import { useLanguage, type Language } from '../../lib/language';
 
 interface NavbarSpaProps {
@@ -13,164 +28,216 @@ interface NavbarSpaProps {
 export const NavbarSpa: React.FC<NavbarSpaProps> = ({
   theme,
   onToggleTheme,
-  isLive = true,
 }) => {
-  const { language, setLanguage, t } = useLanguage();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeHref, setActiveHref] = useState('#bienvenue');
+  const { language, setLanguage } = useLanguage();
+  const [activeTab, setActiveTab] = useState('#bienvenue');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks = [
-    { label: t('nav.welcome'), href: '#bienvenue' },
-    { label: t('nav.about'), href: '#a-propos' },
-    { label: t('nav.bio'), href: '#bios' },
-    { label: t('nav.services'), href: '#services' },
-    { label: t('nav.departments'), href: '#departements' },
-    { label: t('nav.gallery'), href: '#galerie' },
-    { label: t('nav.sermons'), href: '#predications' },
-    { label: 'Live', href: '#live' },
-    { label: t('nav.address'), href: '#adresse' },
-    { label: t('nav.contact'), href: '#contact' },
+  const tabs = [
+    { label: 'Accueil', href: '#bienvenue', icon: Home },
+    { label: "L'Église", href: '#eglise', icon: Church },
+    { label: 'Communauté', href: '#communaute', icon: Users },
+    { label: 'Médias', href: '#medias', icon: PlaySquare },
+    { label: 'Nous Rejoindre', href: '#rejoindre', icon: MapPin },
   ];
 
   useEffect(() => {
-    const updateScrollState = () => setIsScrolled(window.scrollY > 12);
-    updateScrollState();
-    window.addEventListener('scroll', updateScrollState, { passive: true });
-
-    const sections = navLinks
+    const sections = tabs
       .map(({ href }) => document.querySelector<HTMLElement>(href))
-      .filter((section): section is HTMLElement => section !== null);
+      .filter((s): s is HTMLElement => s !== null);
 
-    const observer = new IntersectionObserver((entries) => {
-      const activeEntry = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((first, second) => first.boundingClientRect.top - second.boundingClientRect.top)[0];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) setActiveTab(`#${visible.target.id}`);
+      },
+      { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
+    );
 
-      if (activeEntry) setActiveHref(`#${activeEntry.target.id}`);
-    }, { rootMargin: '-18% 0px -68% 0px', threshold: 0 });
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => {
-      window.removeEventListener('scroll', updateScrollState);
-      observer.disconnect();
-    };
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 border-b border-white/10 text-white transition-all duration-300 ${isScrolled ? 'bg-slate-950/90 shadow-lg shadow-slate-950/20 backdrop-blur-xl' : 'bg-slate-950/65 backdrop-blur-md'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo de l'église */}
-          <a href="#bienvenue" onClick={() => setActiveHref('#bienvenue')} className="group flex items-center gap-3">
-            <img
-              src={churchLogo}
-              alt="Logo de S.I.P.E.C"
-              className="h-12 w-12 rounded-full object-cover ring-1 ring-white/30 transition group-hover:ring-sky-400"
+    <header className="sticky top-0 z-50 w-full h-14 sm:h-16 bg-white dark:bg-[#0F172A] border-b border-slate-200 dark:border-slate-800 shadow-xs px-3 sm:px-4 flex items-center justify-between transition-colors">
+
+      {/* 1. ZONE GAUCHE : Logo officiel + Barre de recherche ovale Facebook */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <a
+          href="#bienvenue"
+          onClick={() => setActiveTab('#bienvenue')}
+          className="flex items-center gap-2"
+          aria-label="Accueil Siloam"
+        >
+          <img
+            src={churchLogo}
+            alt="Logo officiel S.I.P.E.C Siloam Kampala"
+            className="h-10 w-10 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700 shadow-sm"
+          />
+        </a>
+
+        {/* Barre de recherche ovale stylisée (Référence Facebook) */}
+        <div className="relative hidden md:flex items-center">
+          <div className="flex items-center gap-2 bg-[#F0F2F5] dark:bg-slate-800/90 rounded-full py-2 px-3.5 text-slate-500 dark:text-slate-400 w-52 xl:w-64 transition focus-within:w-72 focus-within:ring-2 focus-within:ring-[#1877F2]/30">
+            <Search className="w-4 h-4 shrink-0 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Rechercher sur Siloam..."
+              className="bg-transparent text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none w-full"
             />
-            <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tight leading-tight text-white">
-                S.I.P.E.C
-              </span>
-              <span className="text-[10px] font-medium uppercase tracking-widest text-slate-300">
-                Siloam Church
-              </span>
-            </div>
-          </a>
-
-          {/* Navigation Desktop (10 Onglets compacts & fluides) */}
-          <nav aria-label={t('nav.main')} className="hidden items-center gap-4 text-xs font-medium xl:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setActiveHref(link.href)}
-                aria-current={activeHref === link.href ? 'location' : undefined}
-                className={`relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:rounded-full after:bg-sky-400 after:transition-transform after:duration-300 ${activeHref === link.href ? 'text-white after:scale-x-100' : 'text-slate-300 after:scale-x-0 hover:text-white hover:after:scale-x-100'}`}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Actions : Sélecteur Mode Clair/Sombre & Bouton Live */}
-          <div className="flex items-center gap-3">
-            {/* Toggle Clair / Sombre */}
-            <button
-              onClick={onToggleTheme}
-              className="rounded-full border border-white/15 bg-white/10 p-2.5 text-slate-100 transition hover:border-sky-400/60 hover:bg-white/15 hover:text-sky-200"
-              aria-label={theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
-              title={theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
-            >
-              {theme === 'dark' ? (
-                <Sun className="h-4 w-4 text-amber-300" />
-              ) : (
-                <Moon className="h-4 w-4 text-sky-200" />
-              )}
-            </button>
-
-            <label htmlFor="language-select" className="sr-only">{t('language.label')}</label>
-            <select
-              id="language-select"
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as Language)}
-              aria-label={t('language.label')}
-              className="h-10 rounded-lg border border-white/15 bg-slate-900/80 px-2 text-xs font-semibold text-white outline-none transition hover:border-sky-400/60 focus-visible:ring-2 focus-visible:ring-sky-400"
-            >
-              <option value="fr">FR</option>
-              <option value="en">EN</option>
-              <option value="sw">SW</option>
-            </select>
-
-            {/* Bouton Live Direct */}
-            <a
-              href="#live"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold tracking-wide transition shadow-sm active:scale-95"
-            >
-              {isLive && <Radio className="w-3.5 h-3.5 animate-pulse" />}
-              <span>{t('nav.live')}</span>
-            </a>
-
-            {/* Menu Burger Mobile */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="rounded-lg p-2.5 text-slate-100 transition hover:bg-white/10 xl:hidden"
-              aria-label={t('nav.menuOpen')}
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-navigation"
-            >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Menu Déroulant Mobile avec les 10 sections */}
-      {mobileOpen && (
-        <nav id="mobile-navigation" aria-label={t('nav.mobile')} className="xl:hidden max-h-[85vh] space-y-3 overflow-y-auto border-b border-white/10 bg-slate-950/95 px-6 py-6 shadow-xl backdrop-blur-xl animate-fade-in">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => { setMobileOpen(false); setActiveHref(link.href); }}
-              aria-current={activeHref === link.href ? 'location' : undefined}
-              className={`block border-l-2 py-2 pl-3 text-sm font-medium transition-colors ${activeHref === link.href ? 'border-sky-400 text-white' : 'border-transparent text-slate-300 hover:border-sky-400/60 hover:text-white'}`}
-            >
-              {link.label}
-            </a>
-          ))}
+      {/* 2. ZONE CENTRALE : Les 5 Onglets Stratégiques Facebook */}
+      <nav
+        aria-label="Navigation principale Facebook"
+        className="hidden md:flex items-center h-full max-w-2xl flex-1 justify-center px-2"
+      >
+        <div className="flex items-center h-full gap-1 lg:gap-2">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.href;
 
-          <div className="flex flex-col gap-3 border-t border-white/10 pt-4">
-            <a
-              href="#live"
-              onClick={() => { setMobileOpen(false); setActiveHref('#live'); }}
-              className="w-full rounded-lg bg-sky-500 py-3 text-center text-xs font-semibold text-white shadow-sm transition hover:bg-sky-400"
-            >
-              {t('nav.liveWatch')}
-            </a>
-          </div>
-        </nav>
+            return (
+              <a
+                key={tab.href}
+                href={tab.href}
+                onClick={() => setActiveTab(tab.href)}
+                title={tab.label}
+                aria-label={tab.label}
+                aria-current={isActive ? 'page' : undefined}
+                className={`relative h-full flex items-center justify-center px-6 lg:px-9 transition-colors group cursor-pointer ${isActive
+                  ? 'text-[#1877F2]'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  }`}
+              >
+                <div className="p-2 rounded-xl group-hover:bg-slate-100 dark:group-hover:bg-slate-800/60 transition">
+                  <Icon
+                    className={`w-6 h-6 transition-transform group-hover:scale-105 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'
+                      }`}
+                  />
+                </div>
+
+                {/* Ligne bleue épaisse de 3px en dessous (Référence Facebook active tab) */}
+                {isActive && (
+                  <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#1877F2] rounded-t-full" />
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* 3. ZONE DROITE : Menu applications, Messenger, Notifications 20+, Profil */}
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* Toggle Mode Sombre discret */}
+        <button
+          onClick={onToggleTheme}
+          aria-label={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+          title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-4 h-4 text-[#D4A017]" />
+          ) : (
+            <Moon className="w-4 h-4 text-slate-600" />
+          )}
+        </button>
+
+        {/* Sélecteur de Langue */}
+        <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value as Language)}
+          aria-label="Sélection de la langue"
+          className="h-9 sm:h-10 px-2 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold border-none outline-none cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          <option value="fr">FR</option>
+          <option value="en">EN</option>
+          <option value="sw">SW</option>
+        </select>
+
+        {/* Icône Grille d'applications */}
+        <button
+          aria-label="Menu des applications"
+          title="Applications Siloam"
+          className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5" />
+        </button>
+
+        {/* Icône Messenger */}
+        <a
+          href="#contact"
+          aria-label="Messagerie & Prière"
+          title="Messages & Intercession"
+          className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+        </a>
+
+        {/* Cloche des notifications avec badge "20+" (Référence Facebook) */}
+        <div className="relative">
+          <button
+            aria-label="Notifications Siloam"
+            title="20+ nouvelles annonces et prières"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+          >
+            <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+          <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.2 shadow-sm pointer-events-none">
+            20+
+          </span>
+        </div>
+
+        {/* Avatar circulaire du profil utilisateur */}
+        <a
+          href="#bios"
+          title="Profil pasteur & membre"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 ml-1 hover:opacity-90 transition shrink-0"
+        >
+          <img
+            src={founderPortrait}
+            alt="Profil utilisateur"
+            className="w-full h-full object-cover"
+          />
+        </a>
+
+        {/* Burger Mobile pour les écrans étroits */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Menu"
+          className="md:hidden w-9 h-9 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Menu Mobile Déroulant */}
+      {mobileMenuOpen && (
+        <div className="absolute top-14 sm:top-16 inset-x-0 bg-white dark:bg-[#0F172A] border-b border-slate-200 dark:border-slate-800 p-4 shadow-xl flex flex-col gap-2 md:hidden">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.href;
+            return (
+              <a
+                key={tab.href}
+                href={tab.href}
+                onClick={() => {
+                  setActiveTab(tab.href);
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition ${isActive
+                  ? 'bg-blue-50 dark:bg-blue-950/60 text-[#1877F2]'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{tab.label}</span>
+              </a>
+            );
+          })}
+        </div>
       )}
     </header>
   );

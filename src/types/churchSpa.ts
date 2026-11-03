@@ -23,6 +23,8 @@ export interface ChurchMeta {
     title: string;
     speaker: string;
   };
+  hero?: { title: string; subtitle: string; imageUrl?: string; primaryButtonUrl?: string; secondaryButtonUrl?: string };
+  socials?: { facebook?: string; youtube?: string; instagram?: string; tiktok?: string; whatsapp?: string; twitter?: string };
 }
 
 export interface ChurchService {
@@ -49,6 +51,8 @@ export interface FounderBio {
   callingVerse: string;
   biography: string;
   pillars: string[];
+  photoUrl?: string;
+  quote?: string;
 }
 
 export interface DepartmentItem {
@@ -58,6 +62,7 @@ export interface DepartmentItem {
   schedule: string;
   description: string;
   iconName: 'video' | 'music' | 'users' | 'flame' | 'baby';
+  imageUrl?: string;
 }
 
 export interface GalleryItem {
@@ -66,6 +71,12 @@ export interface GalleryItem {
   category: string;
   aspectRatio: 'square' | 'tall' | 'wide';
   placeholderLabel: string;
+  type?: 'photo' | 'video';
+  thumbnailUrl?: string;
+  mediaUrl?: string;
+  albumId?: string;
+  createdAt?: string;
+  duration?: string;
 }
 
 export interface GalleryAlbum {

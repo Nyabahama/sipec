@@ -95,25 +95,25 @@ export function localizeChurchSpaData(data: ChurchSpaData, language: Language): 
       title: tr(data.founder.title),
       callingVerse: tr(data.founder.callingVerse),
       biography: tr(data.founder.biography),
-      pillars: data.founder.pillars.map(tr),
+      pillars: (data.founder.pillars ?? []).map(tr),
     },
-    communityServices: data.communityServices.map((item) => ({
+    communityServices: (data.communityServices ?? []).map((item) => ({
       ...item,
       title: tr(item.title), description: tr(item.description), badge: tr(item.badge),
     })),
-    servicesCalendar: data.servicesCalendar.map((item) => ({
+    servicesCalendar: (data.servicesCalendar ?? []).map((item) => ({
       ...item,
       day: tr(item.day), title: tr(item.title), description: tr(item.description), location: tr(item.location),
     })),
-    departments: data.departments.map((item) => ({
+    departments: (data.departments ?? []).map((item) => ({
       ...item,
       name: tr(item.name), role: tr(item.role), schedule: tr(item.schedule), description: tr(item.description),
     })),
-    gallery: data.gallery.map((item) => ({
+    gallery: (data.gallery ?? []).map((item) => ({
       ...item,
       title: tr(item.title), category: tr(item.category), placeholderLabel: tr(item.placeholderLabel),
     })),
-    sermons: data.sermons.map((item) => ({
+    sermons: (data.sermons ?? []).map((item) => ({
       ...item,
       title: tr(item.title), preacher: tr(item.preacher), date: tr(item.date), summary: tr(item.summary),
     })),
