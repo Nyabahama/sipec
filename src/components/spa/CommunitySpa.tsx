@@ -246,11 +246,17 @@ export const CommunitySpa: React.FC = () => {
 
       {developerSignature && <aside className="mb-6 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 p-4 text-white shadow-lg dark:border-slate-700">
         <div className="flex items-center gap-3">
-          <img
-            src={String(developerSignature.payload.photo_url || '')}
-            alt="Chrispin Nyabahama"
-            className="h-16 w-16 rounded-full border-2 border-white/30 object-cover shadow-md"
-          />
+          {String(developerSignature.payload.photo_url || '') ? (
+            <img
+              src={String(developerSignature.payload.photo_url)}
+              alt="Chrispin Nyabahama"
+              className="h-16 w-16 rounded-full border-2 border-white/30 object-cover shadow-md"
+            />
+          ) : (
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-white/30 bg-blue-600 text-xl font-bold shadow-md">
+              CN
+            </div>
+          )}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 text-blue-300">
               <Code2 className="h-4 w-4" />
