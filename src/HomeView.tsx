@@ -5,11 +5,12 @@ import { NavbarSpa } from './components/spa/NavbarSpa';
 import { HeroSpa } from './components/spa/HeroSpa';
 import { AboutSpa } from './components/spa/AboutSpa';
 import { BioSpa } from './components/spa/BioSpa';
-import { ServicesSpa } from './components/spa/ServicesSpa';
 import { DepartmentsSpa } from './components/spa/DepartmentsSpa';
 import { GallerySpa } from './components/spa/GallerySpa';
 import { SermonsSpa } from './components/spa/SermonsSpa';
 import { LiveSpa } from './components/spa/LiveSpa';
+import { CultesSpa } from './components/spa/CultesSpa';
+import { CommunitySpa } from './components/spa/CommunitySpa';
 import { AddressSpa } from './components/spa/AddressSpa';
 import { ContactSpa } from './components/spa/ContactSpa';
 import { FooterSpa } from './components/spa/FooterSpa';
@@ -67,31 +68,34 @@ export const HomeView: React.FC = () => {
               }}
             />
 
-            {/* 2. À PROPOS DE NOUS (Badges format Radio Okapi Facebook) */}
+            {/* 2. STATISTIQUES / IMPACT */}
             <AboutSpa about={localizedData.about} />
 
             {/* 3. NOTRE BIOS (Pasteur Fondateur & Vision Jean 9:7) */}
             <BioSpa founder={localizedData.founder} about={localizedData.about} />
 
-            {/* 4. NOS SERVICES (Soutien Communautaire) */}
-            <ServicesSpa services={localizedData.communityServices} />
-
-            {/* 5. NOS DÉPARTEMENTS (Badges format Radio Okapi Facebook) */}
+            {/* 5. NOS DÉPARTEMENTS ET CHORALES */}
             <DepartmentsSpa departments={localizedData.departments} />
 
-            {/* 6. NOTRE GALERIE */}
-            <GallerySpa items={localizedData.gallery} />
-
-            {/* 7. LIVE & REDIFFUSIONS SIPEC */}
-            <LiveSpa streams={localizedData.liveStreams} />
-
-            {/* 8. NOS PRÉDICATIONS */}
+            {/* 6. NOS PRÉDICATIONS */}
             <SermonsSpa sermons={localizedData.sermons} />
 
-            {/* 9. NOTRE ADRESSE & CONTACT */}
+            {/* 7. LIVE TV SIPEC */}
+            <LiveSpa streams={localizedData.liveStreams} />
+
+            {/* 8. GALERIE */}
+            <GallerySpa items={localizedData.gallery} />
+
+            {/* 9. ÉVÉNEMENTS / HORAIRES DES CULTES */}
+            <CultesSpa services={localizedData.servicesCalendar} />
+
+            {/* 10. COMMUNAUTÉ ET BADGES DE LA SEMAINE */}
+            <CommunitySpa />
+
+            {/* 11. ADRESSE */}
             <AddressSpa contact={localizedData.meta.contact} />
 
-            {/* 10. CONTACT & DEMANDE DE PRIÈRE */}
+            {/* 12. CONTACT */}
             <ContactSpa />
           </>
         )}
