@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ChurchSpaData } from '../types/churchSpa';
-import { fetchChurchSpaData, DEFAULT_SPA_DATA } from '../lib/churchSpaData';
+import { fetchChurchSpaData, EMPTY_SPA_DATA } from '../lib/churchSpaData';
 import { useNetworkStatus } from './useNetworkStatus';
 import { useLanguage } from '../lib/language';
 import { subscribePublicContent } from '../services/supabaseContentService';
@@ -20,7 +20,7 @@ export interface UseChurchSpaDataReturn {
 export function useChurchSpaData(): UseChurchSpaDataReturn {
   const { isOnline } = useNetworkStatus();
   const { language } = useLanguage();
-  const [data, setData] = useState<ChurchSpaData>(DEFAULT_SPA_DATA);
+  const [data, setData] = useState<ChurchSpaData>(EMPTY_SPA_DATA);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -32,7 +32,6 @@ export function useChurchSpaData(): UseChurchSpaDataReturn {
       setData(result);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Erreur de chargement'));
-      setData(DEFAULT_SPA_DATA);
     } finally {
       setLoading(false);
     }

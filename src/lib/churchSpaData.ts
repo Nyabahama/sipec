@@ -339,6 +339,16 @@ export const DEFAULT_SPA_DATA: ChurchSpaData = {
   ],
 };
 
+export const EMPTY_SPA_DATA: ChurchSpaData = {
+  ...structuredClone(DEFAULT_SPA_DATA),
+  communityServices: [],
+  departments: [],
+  servicesCalendar: [],
+  gallery: [],
+  sermons: [],
+  liveStreams: [],
+};
+
 export async function fetchChurchSpaData(_language: import('./language').Language = 'fr'): Promise<ChurchSpaData> {
   const { fetchPublicContent, hasSupabaseBackend } = await import('../services/supabaseContentService');
   if (hasSupabaseBackend) {
@@ -346,5 +356,5 @@ export async function fetchChurchSpaData(_language: import('./language').Languag
     if (!remote) throw new Error('Les données publiques Supabase sont indisponibles.');
     return remote;
   }
-  return DEFAULT_SPA_DATA;
+  return EMPTY_SPA_DATA;
 }

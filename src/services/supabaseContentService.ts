@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import type { ChurchSpaData, DepartmentItem, FounderBio, GalleryItem, SermonItem, LiveStream } from '../types/churchSpa';
-import { DEFAULT_SPA_DATA } from '../lib/churchSpaData';
+import { EMPTY_SPA_DATA } from '../lib/churchSpaData';
 import type { Language } from '../lib/language';
 
 export const hasSupabaseBackend = Boolean(import.meta.env.VITE_SUPABASE_URL && !import.meta.env.VITE_SUPABASE_URL.includes('mock-sipec'));
@@ -39,7 +39,7 @@ export async function fetchPublicContent(language: Language): Promise<ChurchSpaD
   const aboutRow = about.data as Record<string, unknown> | null;
   const founderRow = founder.data as Record<string, unknown> | null;
   const contactRow = contacts.data as Record<string, unknown> | null;
-  const result: ChurchSpaData = structuredClone(DEFAULT_SPA_DATA);
+  const result: ChurchSpaData = structuredClone(EMPTY_SPA_DATA);
 
   if (setting) {
     result.meta.name = String(setting.church_name || result.meta.name);
@@ -48,7 +48,7 @@ export async function fetchPublicContent(language: Language): Promise<ChurchSpaD
       instagram: String(setting.instagram_url || ''), tiktok: String(setting.tiktok_url || ''),
       whatsapp: String(setting.whatsapp || ''), twitter: String(setting.twitter_url || ''),
     };
-  } else result.meta.name = DEFAULT_SPA_DATA.meta.name;
+  } else result.meta.name = EMPTY_SPA_DATA.meta.name;
   if (heroRow) result.meta.hero = {
     title: field(heroRow, 'title', language) || result.meta.name,
     subtitle: field(heroRow, 'subtitle', language) || result.meta.hero?.subtitle || '',
