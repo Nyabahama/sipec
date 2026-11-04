@@ -13,6 +13,7 @@ export interface FacebookPostCardProps {
   content: string;
   // Média & Bloc de lien
   mediaUrl?: string;
+  shareImageUrl?: string;
   mediaAlt?: string;
   mediaNode?: React.ReactNode;
   mediaAspectRatio?: 'video' | 'portrait' | 'square' | 'auto';
@@ -39,6 +40,7 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
   isVerified = true,
   content,
   mediaUrl,
+  shareImageUrl,
   mediaAlt = '',
   mediaNode,
   mediaAspectRatio = 'video',
@@ -62,6 +64,7 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
   const [showComments, setShowComments] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const cardRef = React.useRef<HTMLElement>(null);
   const [comments, setComments] = useState<Array<{ id: string; author_name: string; content: string }>>([]);
   const postKey = `${cardTitle}-${window.location.pathname}`;
 
@@ -102,8 +105,10 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
     };
 
     try {
-      if (mediaUrl && typeof navigator.canShare === 'function') {
-        const response = await fetch(mediaUrl);
+      const displayedImage = cardRef.current?.querySelector<HTMLImageElement>('[data-share-media] img')?.src;
+      const imageUrl = shareImageUrl || displayedImage || mediaUrl;
+      if (imageUrl && typeof navigator.canShare === 'function') {
+        const response = await fetch(imageUrl);
         if (response.ok) {
           const blob = await response.blob();
           const extension = blob.type.split('/')[1]?.split(';')[0] || 'jpg';
@@ -156,7 +161,7 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
   const displayedContent = shouldTruncate && !isExpanded ? content.slice(0, 200) + '...' : content;
 
   return (
-    <article className="w-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-6 transition hover:shadow-md">
+    <article ref={cardRef} className="w-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-6 transition hover:shadow-md">
       {/* 1. HEADER (En-tête de la publication) */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
@@ -220,6 +225,7 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
       <div className="w-full border-t border-slate-100 dark:border-slate-800/80">
         {/* Section Image */}
         <div
+          data-share-media
           className={`relative ${
             mediaAspectRatio === 'portrait'
               ? 'aspect-[4/5] max-h-[580px]'

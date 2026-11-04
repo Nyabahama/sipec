@@ -41,6 +41,7 @@ export const CommunitySpa: React.FC = () => {
             metadata={String(weeklyEvents.payload.metadata || '')}
             content={String(weeklyEvents.payload.description || '')}
             mediaUrl={String(weeklyEvents.payload.image_url || '')}
+            shareImageUrl={String(weeklyEvents.payload.image_url || '')}
             mediaNode={weeklyEvents.payload.video_url ? (
               <video
                 src={String(weeklyEvents.payload.video_url)}
@@ -61,6 +62,7 @@ export const CommunitySpa: React.FC = () => {
           <FacebookPostCard
             metadata={String(weeklyProgram.payload.schedule || '')}
             content={`Prédicateur : ${String(weeklyProgram.payload.preacher_name || '')}\nModérateur : ${String(weeklyProgram.payload.moderator_name || '')}\n${String(weeklyProgram.payload.address || '')}`}
+            shareImageUrl={String(weeklyProgram.payload.preacher_image_url || weeklyProgram.payload.moderator_image_url || '')}
             mediaNode={
               <div className="grid h-full w-full grid-cols-2 gap-px bg-slate-200 dark:bg-slate-700">
                 {String(weeklyProgram.payload.preacher_image_url || '') && (
@@ -93,6 +95,7 @@ export const CommunitySpa: React.FC = () => {
             metadata={String(developerSignature.payload.metadata || '')}
             content={String(developerSignature.payload.description || '')}
             mediaUrl={String(developerSignature.payload.photo_url || '')}
+            shareImageUrl={String(developerSignature.payload.photo_url || '')}
             mediaAlt={String(developerSignature.payload.name || developerSignature.title)}
             mediaAspectRatio="portrait"
             domain={String(developerSignature.payload.domain || '')}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 export type Language = 'fr' | 'en' | 'sw';
 
@@ -92,9 +92,19 @@ export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }
     }
   }, [language]);
 
+  const setLanguage = useCallback((nextLanguage: Language) => {
+    setLanguageState(nextLanguage);
+    document.documentElement.lang = nextLanguage;
+    try {
+      localStorage.setItem('sipec_language', nextLanguage);
+    } catch {
+      // Keep the selection for the current session when storage is blocked.
+    }
+  }, []);
+
   const value: LanguageContextValue = {
     language,
-    setLanguage: setLanguageState,
+    setLanguage,
     t: (key) => messages[language][key] ?? messages.fr[key],
   };
 

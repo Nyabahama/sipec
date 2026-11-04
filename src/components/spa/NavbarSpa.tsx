@@ -148,7 +148,12 @@ export const NavbarSpa: React.FC<NavbarSpaProps> = ({
         {/* Sélecteur de Langue */}
         <select
           value={language}
-          onChange={(e) => setLanguage(e.target.value as Language)}
+          onChange={(e) => {
+            const nextLanguage = e.target.value as Language;
+            setLanguage(nextLanguage);
+            document.documentElement.lang = nextLanguage;
+            window.dispatchEvent(new CustomEvent('sipec-language-change', { detail: nextLanguage }));
+          }}
           aria-label="Sélection de la langue"
           className="h-9 sm:h-10 px-2 rounded-full bg-[#F0F2F5] dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold border-none outline-none cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition"
         >
