@@ -73,21 +73,57 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
   };
 
   const shareTo = (network: 'facebook' | 'whatsapp' | 'tiktok' | 'copy') => {
-    const url = window.location.href;
+    const url = new URL(window.location.href);
+    url.hash = `publication-${cardTitle.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80)}`;
     const text = `${cardTitle}\n${content}`;
     const targets = {
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      whatsapp: `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
-      tiktok: `https://www.tiktok.com/share?url=${encodeURIComponent(url)}`,
-      copy: url,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url.href)}&quote=${encodeURIComponent(text)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(`${text}\n${url.href}`)}`,
+      tiktok: `https://www.tiktok.com/share?url=${encodeURIComponent(url.href)}`,
+      copy: url.href,
     };
     if (network === 'copy') {
-      void navigator.clipboard.writeText(url);
+      void navigator.clipboard.writeText(`${text}\n${url.href}`);
       setShowShareMenu(false);
       return;
     }
     window.open(targets[network], '_blank', 'noopener,noreferrer,width=720,height=600');
     setShowShareMenu(false);
+  };
+
+  const shareNative = async () => {
+    const slug = cardTitle.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
+    const url = `${window.location.origin}${window.location.pathname}#publication-${slug}`;
+
+    const shareData: ShareData = {
+      title: cardTitle,
+      text: content,
+      url,
+    };
+
+    try {
+      if (mediaUrl && typeof navigator.canShare === 'function') {
+        const response = await fetch(mediaUrl);
+        if (response.ok) {
+          const blob = await response.blob();
+          const extension = blob.type.split('/')[1]?.split(';')[0] || 'jpg';
+          const file = new File([blob], `sipec-${Date.now()}.${extension}`, { type: blob.type || 'image/jpeg' });
+          const fileShareData: ShareData = { ...shareData, files: [file] };
+          if (navigator.canShare(fileShareData)) shareData.files = [file];
+        }
+      }
+
+      if (typeof navigator.share === 'function' && (!shareData.files || navigator.canShare?.(shareData))) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${cardTitle}\n${content}\n${url}`);
+        setShowShareMenu(true);
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+      await navigator.clipboard.writeText(`${cardTitle}\n${content}\n${url}`).catch(() => undefined);
+      setShowShareMenu(true);
+    }
   };
 
   useEffect(() => {
@@ -281,7 +317,10 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
 
           <div className="relative">
             <button
-              onClick={() => setShowShareMenu((value) => !value)}
+              onClick={() => {
+                if (typeof navigator.share === 'function') void shareNative();
+                else setShowShareMenu((value) => !value);
+              }}
               className="flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             >
               <Share2 className="w-4 h-4" />
@@ -289,6 +328,7 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
             </button>
             {showShareMenu && (
               <div className="absolute bottom-full left-0 z-20 mb-2 w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <button onClick={() => void shareNative()} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Partager avec...</button>
                 <button onClick={() => shareTo('facebook')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Facebook</button>
                 <button onClick={() => shareTo('whatsapp')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">WhatsApp</button>
                 <button onClick={() => shareTo('tiktok')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">TikTok</button>
