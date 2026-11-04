@@ -54,8 +54,9 @@ export async function deleteAdminItem(table: string, id: string) {
 
 export async function uploadAdminMedia(file: File, folder = 'gallery') {
   if (!hasSupabase) return URL.createObjectURL(file);
-  const path = `${folder}/${crypto.randomUUID()}-${file.name}`;
-  const bucket = folder === 'gallery' || folder === 'gallery_media' ? 'gallery' : folder;
+  const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-');
+  const path = `${folder}/${crypto.randomUUID()}-${safeName}`;
+  const bucket = 'church-media';
   const { data, error } = await supabase.storage.from(bucket).upload(path, file, { cacheControl: '3600', upsert: false });
   if (error) throw error;
   const { data: publicUrl } = supabase.storage.from(bucket).getPublicUrl(data.path);
