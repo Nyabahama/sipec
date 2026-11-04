@@ -27,9 +27,12 @@ export async function signOutAdmin() {
 
 export async function getAdminCollection<T>(table: string): Promise<T[]> {
   if (!hasSupabase) return ((mocks as Record<string, unknown[]>)[table] ?? []) as T[];
-  const { data, error } = await supabase.from(table).select('*').order('created_at', { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as T[];
+  let result = await supabase.from(table).select('*').order('created_at', { ascending: false });
+  if (result.error && /created_at/i.test(result.error.message || '') && /column/i.test(result.error.message || '')) {
+    result = await supabase.from(table).select('*');
+  }
+  if (result.error) throw result.error;
+  return (result.data ?? []) as T[];
 }
 
 export async function saveAdminItem(table: string, values: Record<string, unknown>, id?: string) {

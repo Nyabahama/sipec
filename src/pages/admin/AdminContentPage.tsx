@@ -37,7 +37,14 @@ export const AdminContentPage: React.FC<Props> = ({ table, title, description, f
   const [error, setError] = useState('');
   const [adminLanguage, setAdminLanguage] = useState<'fr' | 'en' | 'sw'>('fr');
 
-  const refresh = () => getAdminCollection<Record<string, unknown>>(table).then(setRows).catch(() => setRows([]));
+  const refresh = () => {
+    void getAdminCollection<Record<string, unknown>>(table)
+      .then(setRows)
+      .catch((loadFailure) => {
+        setRows([]);
+        setError(loadFailure instanceof Error ? loadFailure.message : 'Impossible de charger les données Supabase.');
+      });
+  };
   useEffect(() => { void refresh(); }, [table]);
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
