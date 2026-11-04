@@ -142,7 +142,9 @@ export const LiveSpa: React.FC<LiveSpaProps> = ({ streams }) => {
                   />
                 ) : (
                   <>
-                    <img src={liveStream.thumbnail} alt="" className="h-full w-full object-cover opacity-75" />
+                    {liveStream.thumbnail && (
+                      <img src={liveStream.thumbnail} alt="" className="h-full w-full object-cover opacity-75" />
+                    )}
                     <div className="absolute inset-0 grid place-items-center">
                       <span className="grid h-16 w-16 place-items-center rounded-full bg-white/95 text-slate-900 shadow-2xl transition group-hover:scale-110">
                         <Play fill="currentColor" className="ml-1 h-7 w-7" />
@@ -253,7 +255,9 @@ export const LiveSpa: React.FC<LiveSpaProps> = ({ streams }) => {
                   content={`${stream.title}\n\nRevivez ce moment d'adoration, de visitation divine et de parole puissante.`}
                   mediaNode={
                     <div className="group relative aspect-video w-full overflow-hidden bg-black flex items-center justify-center">
-                      <img src={stream.thumbnail} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                      {stream.thumbnail && (
+                        <img src={stream.thumbnail} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                      )}
                       <div className="absolute inset-0 bg-black/30 group-hover:bg-black/15 transition" />
                       <span className="grid h-14 w-14 place-items-center rounded-full bg-white/95 text-slate-900 shadow-xl transition group-hover:scale-110">
                         <Play fill="currentColor" className="ml-1 h-6 w-6" />

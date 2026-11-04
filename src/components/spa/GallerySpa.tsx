@@ -373,12 +373,14 @@ export const GallerySpa: React.FC<GallerySpaProps> = ({ items }) => {
                 >
                   <ChevronLeft size={28} />
                 </button>
-                <img
-                  src={current.mediaUrl}
-                  alt={current.title}
-                  className="max-h-full max-w-full object-contain transition-transform duration-300"
-                  style={{ transform: `scale(${zoom})` }}
-                />
+                {current.mediaUrl && (
+                  <img
+                    src={current.mediaUrl}
+                    alt={current.title}
+                    className="max-h-full max-w-full object-contain transition-transform duration-300"
+                    style={{ transform: `scale(${zoom})` }}
+                  />
+                )}
                 <button
                   aria-label="Photo suivante"
                   onClick={() => move(1)}
@@ -445,7 +447,13 @@ export const GallerySpa: React.FC<GallerySpaProps> = ({ items }) => {
                 <X />
               </button>
             </div>
-            <video className="aspect-video w-full bg-black" controls autoPlay poster={video.thumbnail} src={video.mediaUrl} />
+            <video
+              className="aspect-video w-full bg-black"
+              controls
+              autoPlay
+              {...(video.thumbnail ? { poster: video.thumbnail } : {})}
+              {...(video.mediaUrl ? { src: video.mediaUrl } : {})}
+            />
             <div className="flex flex-col gap-5 p-5 text-white sm:flex-row sm:items-center sm:justify-between sm:p-7">
               <div>
                 <p className="text-xs uppercase tracking-widest text-[#1877F2] font-semibold">{video.category}</p>

@@ -136,12 +136,14 @@ export const SermonsSpa: React.FC<SermonsSpaProps> = ({ sermons }) => {
                   onClick={() => setActive(sermon)}
                   className="group relative aspect-video w-full cursor-pointer overflow-hidden bg-slate-950 flex items-center justify-center"
                 >
-                  <img
-                    src={sermon.thumbnailUrl}
-                    alt={sermon.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
+                  {sermon.thumbnailUrl && (
+                    <img
+                      src={sermon.thumbnailUrl}
+                      alt={sermon.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition" />
                   <div className="absolute grid h-14 w-14 place-items-center rounded-full bg-white/95 text-slate-950 shadow-2xl transition group-hover:scale-110">
                     <Play className="ml-1 fill-current" size={24} />
