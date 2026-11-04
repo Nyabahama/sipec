@@ -55,8 +55,31 @@ CREATE TABLE IF NOT EXISTS public.vitrine_badges (
     cta_button_url TEXT,
     sort_order INT DEFAULT 0,
     
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIME_ZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIME_ZONE('utc'::text, NOW()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+ALTER TABLE public.vitrine_badges
+ADD COLUMN IF NOT EXISTS cta_details_text TEXT;
+
+CREATE TABLE IF NOT EXISTS public.public_comments (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_key TEXT NOT NULL,
+    author_name TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+ALTER TABLE public.public_comments ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lecture publique des commentaires" ON public.public_comments;
+CREATE POLICY "Lecture publique des commentaires"
+ON public.public_comments FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Insertion publique des commentaires" ON public.public_comments;
+CREATE POLICY "Insertion publique des commentaires"
+ON public.public_comments FOR INSERT WITH CHECK (
+    length(trim(author_name)) > 0 AND length(trim(content)) > 0
 );
 
 -- Index pour accélérer les requêtes par section et ordre
@@ -75,6 +98,75 @@ ON public.vitrine_badges
 FOR ALL 
 TO authenticated 
 USING (true);
+
+CREATE TABLE IF NOT EXISTS public.community_badges (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    badge_key TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL DEFAULT '',
+    payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+    status TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('draft', 'published')),
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+ALTER TABLE public.community_badges ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lecture publique des badges communautaires" ON public.community_badges;
+CREATE POLICY "Lecture publique des badges communautaires"
+ON public.community_badges FOR SELECT
+USING (status = 'published');
+
+DROP POLICY IF EXISTS "Gestion admin des badges communautaires" ON public.community_badges;
+CREATE POLICY "Gestion admin des badges communautaires"
+ON public.community_badges FOR ALL
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+INSERT INTO public.community_badges (badge_key, title, payload, sort_order)
+VALUES
+(
+  'weekly_events',
+  'Nos événements de la semaine',
+  '{
+    "description": "Moments vécus et témoignages de la communauté",
+    "event_title": "Grande nuit de louange",
+    "event_subtitle": "Vendredi dernier · Kirombe, Kampala",
+    "image_url": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=900&q=85",
+    "christians": 320,
+    "visitors": 48,
+    "testimonies": 27
+  }'::jsonb,
+  1
+),
+(
+  'weekly_program',
+  'Programme de la semaine',
+  '{
+    "preacher_image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=85",
+    "moderator_image_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=85",
+    "preacher_label": "Prédicateur principal",
+    "moderator_label": "Modérateur",
+    "preacher_name": "Pasteur Fondateur",
+    "moderator_name": "Sœur Rachel",
+    "schedule": "Dimanche · 08h00 - 12h00",
+    "address": "Kirombe, Sambya, Kampala, Ouganda"
+  }'::jsonb,
+  2
+),
+(
+  'developer_signature',
+  'Designed by Software Engineer Chrispin Nyabahama',
+  '{
+    "name": "Software Engineer Chrispin Nyabahama",
+    "photo_url": "",
+    "portfolio_url": "https://github.com/Nyabahama",
+    "description": "Database manager, créateur de contenu média et designer — web, applications mobiles et desktop, IT manager, helpdesk et networking."
+  }'::jsonb,
+  3
+)
+ON CONFLICT (badge_key) DO NOTHING;
 
 -- 4. INSERTION DE TOUTES LES DONNÉES EXISTANTES DE LA VITRINE (SEED COMPLET)
 INSERT INTO public.vitrine_badges 
@@ -578,4 +670,3 @@ VALUES
   'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
   3
 );
-

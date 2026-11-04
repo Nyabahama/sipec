@@ -155,6 +155,7 @@ export const HeroSpa: React.FC<HeroSpaProps> = ({ meta, backgroundImage }) => {
                 commentsCount={badge.comment_count_simulated}
                 actionLabel={badge.cta_button_text || 'En savoir plus'}
                 actionHref={badge.cta_button_url || '#bios'}
+                actionDetails={badge.cta_details_text || undefined}
               />
             ))}
           </div>

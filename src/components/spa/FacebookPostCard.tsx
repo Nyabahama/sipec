@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Globe, MoreHorizontal, X, ThumbsUp, MessageSquare, Share2, Info } from 'lucide-react';
 import churchLogo from '../../assets/siloam.jpeg';
+import { supabase } from '../../lib/supabase';
 
 export interface FacebookPostCardProps {
   // En-tête
@@ -28,6 +29,7 @@ export interface FacebookPostCardProps {
   actionLabel?: string;
   actionHref?: string;
   onActionClick?: () => void;
+  actionDetails?: string;
 }
 
 export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
@@ -51,11 +53,17 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
   actionLabel,
   actionHref,
   onActionClick,
+  actionDetails,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [likes, setLikes] = useState(amenCount);
   const [isVisible, setIsVisible] = useState(true);
+  const [showComments, setShowComments] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [comments, setComments] = useState<Array<{ id: string; author_name: string; content: string }>>([]);
+  const postKey = `${cardTitle}-${window.location.pathname}`;
 
   if (!isVisible) return null;
 
@@ -64,12 +72,47 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
     setLikes(hasLiked ? likes - 1 : likes + 1);
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({ title: cardTitle, text: content, url: window.location.href });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Lien de la publication copié !');
+  const shareTo = (network: 'facebook' | 'whatsapp' | 'tiktok' | 'copy') => {
+    const url = window.location.href;
+    const text = `${cardTitle}\n${content}`;
+    const targets = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
+      tiktok: `https://www.tiktok.com/share?url=${encodeURIComponent(url)}`,
+      copy: url,
+    };
+    if (network === 'copy') {
+      void navigator.clipboard.writeText(url);
+      setShowShareMenu(false);
+      return;
+    }
+    window.open(targets[network], '_blank', 'noopener,noreferrer,width=720,height=600');
+    setShowShareMenu(false);
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    supabase.from('public_comments').select('id, author_name, content').eq('post_key', postKey).order('created_at', { ascending: true })
+      .then(({ data }) => {
+        if (mounted && data) setComments(data);
+      });
+    return () => { mounted = false; };
+  }, [postKey]);
+
+  const submitComment = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const authorName = String(form.get('authorName') || '').trim();
+    const comment = String(form.get('comment') || '').trim();
+    if (!authorName || !comment) return;
+    const { data, error } = await supabase.from('public_comments').insert({
+      post_key: postKey,
+      author_name: authorName,
+      content: comment,
+    }).select('id, author_name, content').single();
+    if (!error && data) {
+      setComments((current) => [...current, data]);
+      event.currentTarget.reset();
     }
   };
 
@@ -193,6 +236,12 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
         </div>
       </div>
 
+      {showDetails && actionDetails && (
+        <div className="border-t border-slate-200 dark:border-slate-800 px-4 py-4 text-sm leading-relaxed whitespace-pre-line text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40">
+          {actionDetails}
+        </div>
+      )}
+
       {/* 4. FOOTER (Barre d'actions basse) */}
       <div className="px-4 py-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-1.5">
@@ -223,35 +272,47 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
           </button>
 
           <button
-            onClick={() => alert('Les commentaires sont ouverts durant les créneaux d’édification.')}
+            onClick={() => setShowComments((value) => !value)}
             className="flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
           >
             <MessageSquare className="w-4 h-4" />
             <span className="hidden sm:inline">Commenter</span>
           </button>
 
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-          >
-            <Share2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Partager</span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowShareMenu((value) => !value)}
+              className="flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            >
+              <Share2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Partager</span>
+            </button>
+            {showShareMenu && (
+              <div className="absolute bottom-full left-0 z-20 mb-2 w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <button onClick={() => shareTo('facebook')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Facebook</button>
+                <button onClick={() => shareTo('whatsapp')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">WhatsApp</button>
+                <button onClick={() => shareTo('tiktok')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">TikTok</button>
+                <button onClick={() => shareTo('copy')} className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Instagram / Copier le lien</button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Bouton d'action pilule à l'extrême droite */}
         {actionLabel && (
           <div>
-            {actionHref ? (
+            {actionHref && actionHref !== '#' ? (
               <a
                 href={actionHref}
+                target={actionHref.startsWith('http') ? '_blank' : undefined}
+                rel={actionHref.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className="inline-flex items-center justify-center rounded-full px-5 py-2 text-white bg-[#1877F2] hover:bg-blue-600 font-medium text-sm transition shadow-sm"
               >
                 {actionLabel}
               </a>
             ) : (
               <button
-                onClick={onActionClick}
+                onClick={actionDetails ? () => setShowDetails((value) => !value) : onActionClick}
                 className="inline-flex items-center justify-center rounded-full px-5 py-2 text-white bg-[#1877F2] hover:bg-blue-600 font-medium text-sm transition shadow-sm"
               >
                 {actionLabel}
@@ -260,7 +321,24 @@ export const FacebookPostCard: React.FC<FacebookPostCardProps> = ({
           </div>
         )}
       </div>
+      {showComments && (
+        <div className="border-t border-slate-200 dark:border-slate-800 px-4 py-4">
+          <div className="space-y-3">
+            {comments.map((comment) => (
+              <div key={comment.id} className="rounded-xl bg-slate-100 px-3 py-2 dark:bg-slate-800">
+                <p className="text-xs font-bold">{comment.author_name}</p>
+                <p className="mt-1 text-sm">{comment.content}</p>
+              </div>
+            ))}
+            {comments.length === 0 && <p className="text-sm text-slate-500">Soyez le premier à commenter.</p>}
+          </div>
+          <form onSubmit={submitComment} className="mt-4 grid gap-2">
+            <input required name="authorName" placeholder="Votre nom" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+            <textarea required name="comment" rows={2} placeholder="Votre commentaire..." className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+            <button className="rounded-full bg-[#1877F2] px-4 py-2 text-sm font-bold text-white">Publier le commentaire</button>
+          </form>
+        </div>
+      )}
     </article>
   );
 };
-

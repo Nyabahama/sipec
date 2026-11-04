@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BookOpen, CalendarDays, ChevronRight, GalleryHorizontalEnd, LayoutDashboard, LogOut, Menu, Radio, Settings, Building2, Users, X, Home, Info, UserRound, Music, MapPin } from 'lucide-react';
+import { BookOpen, CalendarDays, ChevronRight, GalleryHorizontalEnd, LayoutDashboard, LogOut, Menu, Radio, Settings, Building2, Users, X, Home, Info, UserRound, Music, MapPin, BadgeCheck } from 'lucide-react';
 import { signOutAdmin } from '../../services/adminService';
 
 const links = [
-  ['dashboard', 'Tableau de bord', LayoutDashboard], ['vitrine-badges', 'Badges Vitrine', LayoutDashboard], ['hero', 'Hero', Home], ['about', 'À propos', Info], ['founder', 'Visionnaire', UserRound], ['departments', 'Départements', Building2], ['choirs', 'Chorales', Music], ['gallery', 'Galerie', GalleryHorizontalEnd],
+  ['dashboard', 'Tableau de bord', LayoutDashboard], ['vitrine-badges', 'Badges Vitrine', LayoutDashboard], ['community-badges', 'Badges Communauté', BadgeCheck], ['hero', 'Hero', Home], ['about', 'À propos', Info], ['founder', 'Visionnaire', UserRound], ['departments', 'Départements', Building2], ['choirs', 'Chorales', Music], ['gallery', 'Galerie', GalleryHorizontalEnd],
   ['gallery-media', 'Médias galerie', GalleryHorizontalEnd], ['sermons', 'Prédications', BookOpen], ['live', 'Live TV', Radio], ['events', 'Événements', CalendarDays], ['contact', 'Contact', MapPin], ['users', 'Utilisateurs', Users], ['settings', 'Paramètres', Settings],
 ] as const;
 

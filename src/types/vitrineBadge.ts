@@ -24,8 +24,8 @@ export interface VitrineBadge {
   comment_count_simulated?: number;
   cta_button_text?: string | null;
   cta_button_url?: string | null;
+  cta_details_text?: string | null;
   sort_order?: number;
   created_at?: string;
   updated_at?: string;
 }
-

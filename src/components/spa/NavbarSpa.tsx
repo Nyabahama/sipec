@@ -35,10 +35,10 @@ export const NavbarSpa: React.FC<NavbarSpaProps> = ({
 
   const tabs = [
     { label: 'Accueil', href: '#bienvenue', icon: Home },
-    { label: "L'Église", href: '#eglise', icon: Church },
+    { label: "L'Église", href: '#a-propos', icon: Church },
     { label: 'Communauté', href: '#communaute', icon: Users },
-    { label: 'Médias', href: '#medias', icon: PlaySquare },
-    { label: 'Nous Rejoindre', href: '#rejoindre', icon: MapPin },
+    { label: 'Médias', href: '#galerie', icon: PlaySquare },
+    { label: 'Nous Rejoindre', href: '#adresse', icon: MapPin },
   ];
 
   useEffect(() => {

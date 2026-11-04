@@ -108,6 +108,7 @@ export const AdminVitrineManager: React.FC = () => {
         comment_count_simulated: Number(editingBadge?.comment_count_simulated) || 0,
         cta_button_text: editingBadge?.cta_button_text || 'En savoir plus',
         cta_button_url: editingBadge?.cta_button_url || null,
+        cta_details_text: editingBadge?.cta_details_text || null,
         sort_order: Number(editingBadge?.sort_order) || 0,
         updated_at: new Date().toISOString(),
       };
@@ -398,6 +399,18 @@ export const AdminVitrineManager: React.FC = () => {
                   className={inputClass}
                 />
               </div>
+              <div className="sm:col-span-4">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Texte supplémentaire affiché par « En savoir plus »
+                </label>
+                <textarea
+                  value={editingBadge.cta_details_text || ''}
+                  onChange={(e) => setEditingBadge({ ...editingBadge, cta_details_text: e.target.value })}
+                  rows={4}
+                  placeholder="Contenu complet affiché après clic sur le bouton..."
+                  className={`${inputClass} resize-y`}
+                />
+              </div>
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Likes / Amen (Simulés)
@@ -596,4 +609,3 @@ export const AdminVitrineManager: React.FC = () => {
     </AdminLayout>
   );
 };
-

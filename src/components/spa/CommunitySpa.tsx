@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
-import { Sparkles, Plus } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+  CalendarDays,
+  Clock3,
+  Code2,
+  ExternalLink,
+  MapPin,
+  MessageSquareText,
+  Plus,
+  Sparkles,
+  UserRoundCheck,
+  Users,
+} from 'lucide-react';
 import churchLogo from '../../assets/siloam.jpeg';
 import founderPortrait from '../../assets/apo.jpeg';
 import { FacebookPostCard } from './FacebookPostCard';
+import { supabase } from '../../lib/supabase';
 
 interface CommunityPost {
   id: string;
@@ -24,8 +36,29 @@ interface CommunityPost {
   actionButtonUrl: string;
 }
 
+interface CommunityBadge {
+  badge_key: string;
+  title: string;
+  payload: Record<string, string | number>;
+}
+
 export const CommunitySpa: React.FC = () => {
   const [filter, setFilter] = useState<'tous' | 'priere' | 'temoignage' | 'annonce'>('tous');
+  const [communityBadges, setCommunityBadges] = useState<CommunityBadge[]>([]);
+  const [communityLoading, setCommunityLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCommunityBadges = async () => {
+      const { data, error } = await supabase
+        .from('community_badges')
+        .select('badge_key,title,payload')
+        .eq('status', 'published')
+        .order('sort_order');
+      if (!error) setCommunityBadges((data || []) as CommunityBadge[]);
+      setCommunityLoading(false);
+    };
+    void loadCommunityBadges();
+  }, []);
 
   // Stories Spirituelles (Facebook / Instagram Stories)
   const stories = [
@@ -104,6 +137,10 @@ export const CommunitySpa: React.FC = () => {
       ? initialPosts
       : initialPosts.filter((post) => post.category === filter);
 
+  const weeklyEvents = communityBadges.find((badge) => badge.badge_key === 'weekly_events');
+  const weeklyProgram = communityBadges.find((badge) => badge.badge_key === 'weekly_program');
+  const developerSignature = communityBadges.find((badge) => badge.badge_key === 'developer_signature');
+
   return (
     <section id="communaute" className="py-10 max-w-3xl mx-auto px-4 sm:px-6">
       {/* En-tête de section */}
@@ -129,6 +166,119 @@ export const CommunitySpa: React.FC = () => {
           <span>Partager un témoignage</span>
         </a>
       </div>
+
+      {!communityLoading && <div className="mb-6 grid gap-4 lg:grid-cols-2">
+        {weeklyEvents && (
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="bg-gradient-to-r from-[#1877F2] to-indigo-600 px-5 py-4 text-white">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-5 w-5" />
+              <h3 className="font-bold">{String(weeklyEvents.title)}</h3>
+            </div>
+            <p className="mt-1 text-xs text-blue-100">{String(weeklyEvents.payload.description || '')}</p>
+          </div>
+          <div className="p-4">
+            <div className="relative overflow-hidden rounded-xl">
+              <img
+                src={String(weeklyEvents.payload.image_url || '')}
+                alt="Événement communautaire S.I.P.E.C"
+                className="h-36 w-full object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pb-3 pt-8">
+                <p className="text-sm font-bold text-white">{String(weeklyEvents.payload.event_title || '')}</p>
+                <p className="text-xs text-white/80">{String(weeklyEvents.payload.event_subtitle || '')}</p>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              {[
+                { icon: Users, value: Number(weeklyEvents.payload.christians || 0), label: 'Chrétiens' },
+                { icon: UserRoundCheck, value: Number(weeklyEvents.payload.visitors || 0), label: 'Visiteurs' },
+                { icon: MessageSquareText, value: Number(weeklyEvents.payload.testimonies || 0), label: 'Témoignages' },
+              ].map(({ icon: Icon, value, label }) => (
+                <div key={label} className="rounded-xl bg-slate-50 px-2 py-3 text-center dark:bg-slate-800">
+                  <Icon className="mx-auto mb-1 h-4 w-4 text-[#1877F2]" />
+                  <strong className="block text-lg text-slate-900 dark:text-white">{value}</strong>
+                  <span className="text-[10px] font-medium text-slate-500">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </article>
+        )}
+
+        {weeklyProgram && (
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="px-5 py-4">
+            <div className="flex items-center gap-2 text-[#1877F2]">
+              <Clock3 className="h-5 w-5" />
+              <h3 className="font-bold text-slate-900 dark:text-white">{String(weeklyProgram.title)}</h3>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-1 px-4">
+            <div>
+              <img
+                src={String(weeklyProgram.payload.preacher_image_url || '')}
+                alt="Prédicateur principal"
+                className="h-28 w-full rounded-l-xl object-cover"
+              />
+              <p className="mt-1 text-xs font-semibold text-slate-700 dark:text-slate-300">{String(weeklyProgram.payload.preacher_label || '')}</p>
+            </div>
+            <div>
+              <img
+                src={String(weeklyProgram.payload.moderator_image_url || '')}
+                alt="Modérateur du culte"
+                className="h-28 w-full rounded-r-xl object-cover"
+              />
+              <p className="mt-1 text-xs font-semibold text-slate-700 dark:text-slate-300">{String(weeklyProgram.payload.moderator_label || '')}</p>
+            </div>
+          </div>
+          <div className="m-4 rounded-xl bg-blue-50 p-4 dark:bg-blue-950/40">
+            <div className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              <p><strong>Prédicateur :</strong> {String(weeklyProgram.payload.preacher_name || '')}</p>
+              <p><strong>Modérateur :</strong> {String(weeklyProgram.payload.moderator_name || '')}</p>
+              <p className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#1877F2]" /> {String(weeklyProgram.payload.schedule || '')}</p>
+              <p className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1877F2]" /> {String(weeklyProgram.payload.address || '')}</p>
+            </div>
+          </div>
+        </article>
+        )}
+      </div>}
+
+      {developerSignature && <aside className="mb-6 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 p-4 text-white shadow-lg dark:border-slate-700">
+        <div className="flex items-center gap-3">
+          <img
+            src={String(developerSignature.payload.photo_url || '')}
+            alt="Chrispin Nyabahama"
+            className="h-16 w-16 rounded-full border-2 border-white/30 object-cover shadow-md"
+          />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 text-blue-300">
+              <Code2 className="h-4 w-4" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em]">Designed by</span>
+            </div>
+            <h3 className="mt-0.5 font-bold">{String(developerSignature.payload.name || developerSignature.title)}</h3>
+            <p className="mt-1 text-xs leading-5 text-slate-300">
+              {String(developerSignature.payload.description || '')}
+            </p>
+          </div>
+          <a
+            href={String(developerSignature.payload.portfolio_url || '#')}
+            target="_blank"
+            rel="noreferrer"
+            className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:bg-blue-50 sm:inline-flex"
+          >
+            Portfolio <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        </div>
+        <a
+          href={String(developerSignature.payload.portfolio_url || '#')}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-900 sm:hidden"
+        >
+          Voir mon portfolio <ExternalLink className="h-3.5 w-3.5" />
+        </a>
+      </aside>}
 
       {/* Stories Spirituelles (Facebook Stories) */}
       <div className="mb-6 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -216,4 +366,3 @@ export const CommunitySpa: React.FC = () => {
     </section>
   );
 };
-

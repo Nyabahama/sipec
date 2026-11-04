@@ -9,7 +9,7 @@ const phone = (row: Record<string, unknown>, key: string) => String(row[key] ?? 
 
 export function subscribePublicContent(onChange: () => void): () => void {
   if (!hasSupabaseBackend) return () => undefined;
-  const tables = ['settings', 'hero', 'about', 'founder', 'departments', 'choirs', 'gallery_albums', 'gallery_media', 'sermons', 'livestreams', 'events', 'contacts'];
+  const tables = ['settings', 'hero', 'about', 'founder', 'departments', 'choirs', 'gallery_albums', 'gallery_media', 'sermons', 'livestreams', 'events', 'contacts', 'community_badges'];
   const channel = supabase.channel('sipec-public-content');
   tables.forEach((table) => channel.on('postgres_changes', { event: '*', schema: 'public', table }, onChange));
   channel.subscribe();

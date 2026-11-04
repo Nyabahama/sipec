@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AdminLogin } from './AdminLogin';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminSettings } from './AdminSettings';
 import { AdminContentPage } from './AdminContentPage';
 import { AdminVitrineManager } from './AdminVitrineManager';
+import { AdminCommunityBadges } from './AdminCommunityBadges';
+import { supabase } from '../../lib/supabase';
 
 export const AdminApp: React.FC = () => {
   const path = window.location.pathname.replace(/\/$/, '') || '/admin';
   if (path === '/admin/login') return <AdminLogin />;
-  if (!localStorage.getItem('sipec_admin_session')) {
+  const [authorized, setAuthorized] = useState<boolean | null>(
+    import.meta.env.VITE_SUPABASE_URL?.includes('mock-sipec') ? Boolean(localStorage.getItem('sipec_admin_session')) : null
+  );
+  useEffect(() => {
+    if (!import.meta.env.VITE_SUPABASE_URL?.includes('mock-sipec')) {
+      void supabase.auth.getSession().then(({ data }) => setAuthorized(Boolean(data.session)));
+    }
+  }, []);
+  if (authorized === null) return null;
+  if (!authorized) {
     window.location.replace('/admin/login');
     return null;
   }
@@ -17,6 +28,7 @@ export const AdminApp: React.FC = () => {
     '/admin': <AdminDashboard />,
     '/admin/dashboard': <AdminDashboard />,
     '/admin/vitrine-badges': <AdminVitrineManager />,
+    '/admin/community-badges': <AdminCommunityBadges />,
     '/admin/hero': <AdminContentPage table="hero" title="Hero" description="Gérez les titres, sous-titres, visuels et appels à l’action du site." fields={[{key:'title_fr',label:'Titre (FR)',required:true},{key:'title_en',label:'Titre (EN)'},{key:'title_sw',label:'Titre (SW)'},{key:'subtitle_fr',label:'Sous-titre (FR)',type:'textarea'},{key:'subtitle_en',label:'Sous-titre (EN)',type:'textarea'},{key:'subtitle_sw',label:'Sous-titre (SW)',type:'textarea'},{key:'image_url',label:'Image du Hero'},{key:'scripture_reference',label:'Référence biblique'},{key:'scripture_text_fr',label:'Verset (FR)',type:'textarea'},{key:'scripture_text_en',label:'Verset (EN)',type:'textarea'},{key:'scripture_text_sw',label:'Verset (SW)',type:'textarea'},{key:'primary_button_url',label:'Lien principal'},{key:'secondary_button_url',label:'Lien secondaire'}]} />,
     '/admin/about': <AdminContentPage table="about" title="À propos" description="Gérez la mission, la vision et l’histoire de SIPEC." fields={[{key:'mission_fr',label:'Mission (FR)',type:'textarea'},{key:'mission_en',label:'Mission (EN)',type:'textarea'},{key:'mission_sw',label:'Mission (SW)',type:'textarea'},{key:'vision_fr',label:'Vision (FR)',type:'textarea'},{key:'vision_en',label:'Vision (EN)',type:'textarea'},{key:'vision_sw',label:'Vision (SW)',type:'textarea'},{key:'history_fr',label:'Histoire (FR)',type:'textarea'},{key:'history_en',label:'Histoire (EN)',type:'textarea'},{key:'history_sw',label:'Histoire (SW)',type:'textarea'}]} />,
     '/admin/founder': <AdminContentPage table="founder" title="Visionnaire" description="Gérez le portrait, la biographie et la vision du fondateur." fields={[{key:'name',label:'Nom',required:true},{key:'photo_url',label:'Photo'},{key:'title_fr',label:'Titre (FR)'},{key:'title_en',label:'Titre (EN)'},{key:'title_sw',label:'Titre (SW)'},{key:'biography_fr',label:'Biographie (FR)',type:'textarea'},{key:'biography_en',label:'Biographie (EN)',type:'textarea'},{key:'biography_sw',label:'Biographie (SW)',type:'textarea'},{key:'vision_fr',label:'Vision (FR)',type:'textarea'},{key:'vision_en',label:'Vision (EN)',type:'textarea'},{key:'vision_sw',label:'Vision (SW)',type:'textarea'},{key:'quote_fr',label:'Citation (FR)'},{key:'quote_en',label:'Citation (EN)'},{key:'quote_sw',label:'Citation (SW)'}]} />,
