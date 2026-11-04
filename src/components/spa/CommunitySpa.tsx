@@ -38,11 +38,11 @@ export const CommunitySpa: React.FC = () => {
       <div className="space-y-6">
         {weeklyEvents && (
           <FacebookPostCard
-            metadata={String(weeklyEvents.payload.event_subtitle || 'Cette semaine • Kampala')}
+            metadata={String(weeklyEvents.payload.metadata || '')}
             content={String(weeklyEvents.payload.description || '')}
             mediaUrl={String(weeklyEvents.payload.image_url || '')}
             mediaAlt={String(weeklyEvents.payload.event_title || weeklyEvents.title)}
-            domain="SILOAMKAMPALA.ORG"
+            domain={String(weeklyEvents.payload.domain || '')}
             cardTitle={String(weeklyEvents.payload.event_title || weeklyEvents.title)}
             cardSubtitle={`${weeklyEvents.payload.christians || 0} chrétiens • ${weeklyEvents.payload.visitors || 0} visiteurs • ${weeklyEvents.payload.testimonies || 0} témoignages`}
           />
@@ -71,7 +71,7 @@ export const CommunitySpa: React.FC = () => {
               </div>
             }
             mediaAspectRatio="video"
-            domain="SILOAMKAMPALA.ORG"
+            domain={String(weeklyProgram.payload.domain || '')}
             cardTitle={weeklyProgram.title}
             cardSubtitle={`${String(weeklyProgram.payload.preacher_label || 'Prédicateur principal')} • ${String(weeklyProgram.payload.moderator_label || 'Modérateur')}`}
           />
@@ -79,12 +79,14 @@ export const CommunitySpa: React.FC = () => {
 
         {developerSignature && (
           <FacebookPostCard
-            metadata="Créateur du site • Kampala"
+            authorName={String(developerSignature.payload.name || '')}
+            {...(developerSignature.payload.photo_url ? { authorAvatar: String(developerSignature.payload.photo_url) } : {})}
+            metadata={String(developerSignature.payload.metadata || '')}
             content={String(developerSignature.payload.description || '')}
             mediaUrl={String(developerSignature.payload.photo_url || '')}
             mediaAlt={String(developerSignature.payload.name || developerSignature.title)}
             mediaAspectRatio="portrait"
-            domain="CHRISPIN NYABAHAMA"
+            domain={String(developerSignature.payload.domain || '')}
             cardTitle={String(developerSignature.payload.name || developerSignature.title)}
             cardSubtitle="Designed by"
             actionLabel="Voir le portfolio"
