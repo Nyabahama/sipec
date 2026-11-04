@@ -41,6 +41,15 @@ export const CommunitySpa: React.FC = () => {
             metadata={String(weeklyEvents.payload.metadata || '')}
             content={String(weeklyEvents.payload.description || '')}
             mediaUrl={String(weeklyEvents.payload.image_url || '')}
+            mediaNode={weeklyEvents.payload.video_url ? (
+              <video
+                src={String(weeklyEvents.payload.video_url)}
+                controls
+                playsInline
+                preload="metadata"
+                className="h-full w-full bg-black object-contain"
+              />
+            ) : undefined}
             mediaAlt={String(weeklyEvents.payload.event_title || weeklyEvents.title)}
             domain={String(weeklyEvents.payload.domain || '')}
             cardTitle={String(weeklyEvents.payload.event_title || weeklyEvents.title)}
