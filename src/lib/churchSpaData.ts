@@ -339,42 +339,12 @@ export const DEFAULT_SPA_DATA: ChurchSpaData = {
   ],
 };
 
-const SPA_CACHE_KEY = 'sipec_spa_departments_cache_v4';
-
 export async function fetchChurchSpaData(_language: import('./language').Language = 'fr'): Promise<ChurchSpaData> {
   const { fetchPublicContent, hasSupabaseBackend } = await import('../services/supabaseContentService');
   if (hasSupabaseBackend) {
-    try {
-      const remote = await fetchPublicContent(_language);
-      if (remote) return remote;
-    } catch (error) {
-      console.warn('[SIPEC] Repli sur les données locales, Supabase indisponible.', error);
-    }
+    const remote = await fetchPublicContent(_language);
+    if (!remote) throw new Error('Les données publiques Supabase sont indisponibles.');
+    return remote;
   }
-
-  // Simule une requête réseau asynchrone (Supabase API) avec délai
-  await new Promise((resolve) => setTimeout(resolve, 350));
-
-  try {
-    const cached = localStorage.getItem(SPA_CACHE_KEY);
-    if (cached) {
-      const cachedData = JSON.parse(cached) as Partial<ChurchSpaData>;
-      return {
-        ...DEFAULT_SPA_DATA,
-        ...cachedData,
-        communityServices: cachedData.communityServices ?? DEFAULT_SPA_DATA.communityServices,
-        servicesCalendar: cachedData.servicesCalendar ?? DEFAULT_SPA_DATA.servicesCalendar,
-        departments: cachedData.departments ?? DEFAULT_SPA_DATA.departments,
-        gallery: cachedData.gallery ?? DEFAULT_SPA_DATA.gallery,
-        sermons: cachedData.sermons ?? DEFAULT_SPA_DATA.sermons,
-        liveStreams: cachedData.liveStreams ?? DEFAULT_SPA_DATA.liveStreams,
-      };
-    }
-  } catch {}
-
-  try {
-    localStorage.setItem(SPA_CACHE_KEY, JSON.stringify(DEFAULT_SPA_DATA));
-  } catch {}
-
   return DEFAULT_SPA_DATA;
 }

@@ -8,74 +8,14 @@ interface DepartmentsSpaProps {
 }
 
 export const DepartmentsSpa: React.FC<DepartmentsSpaProps> = ({ departments }) => {
-  const defaultDepartments = [
-    {
-      id: 'dep-jeunesse',
-      name: 'Jeunesse Siloam Émergence',
-      category: 'jeunesse',
-      role: 'Ministère des Jeunes',
-      schedule: 'Samedi dès 15h00',
-      description: 'Former une génération de disciples fervents, brillants dans leurs études et carrières, et enracinés dans l’Évangile de Christ.',
-      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 'dep-chorale',
-      name: 'Chorale Shekinah & Adoration',
-      category: 'louange',
-      role: 'Pôle Musical & Chant',
-      schedule: 'Répétitions : Samedi 10h00',
-      description: 'Conduire le peuple de Dieu dans une adoration prophétique et profonde, où les cœurs s’élèvent et les jougs se brisent.',
-      image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 'dep-media',
-      name: 'Département Médias & Diffusion',
-      category: 'media',
-      role: 'Diffusion Internationale',
-      schedule: 'Actif 7j/7 & Cultes',
-      description: 'Propulser l’Évangile aux extrémités de la terre par la vidéo HD, les podcasts, le son haute fidélité et les réseaux sociaux.',
-      image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce09?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 'dep-intercession',
-      name: 'Chaîne d’Intercession & Prière',
-      category: 'priere',
-      role: 'Sentinelles Spirituelles',
-      schedule: 'Vendredi 22h30 – Aube',
-      description: 'Veiller jour et nuit pour l’Église, les serviteurs de Dieu, les familles de l’assemblée et le réveil en Ouganda.',
-      image: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 'dep-ecole',
-      name: 'École du Dimanche (Enfants)',
-      category: 'enfants',
-      role: 'Nouvelle Génération',
-      schedule: 'Chaque Dimanche 08h30',
-      description: 'Enseigner la Parole de Dieu aux enfants dès le plus jeune âge avec amour, créativité et des activités adaptées.',
-      image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 'dep-social',
-      name: 'Compassion & Entraide Familiale',
-      category: 'social',
-      role: 'Accompagnement Social',
-      schedule: 'Permanence sur RDV',
-      description: 'Secourir les veuves, soutenir les orphelins et entourer les familles vulnérables selon les préceptes du Seigneur.',
-      image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80',
-    },
-  ];
-
-  const deptList =
-    departments && departments.length > 0
-      ? departments.map((d, i) => ({
-          id: d.id,
-          name: d.name,
-          role: d.role,
-          schedule: d.schedule,
-          description: d.description,
-          image: d.imageUrl || defaultDepartments[i % defaultDepartments.length].image,
-        }))
-      : defaultDepartments;
+  const deptList = departments.map((department) => ({
+    id: department.id,
+    name: department.name,
+    role: department.role,
+    schedule: department.schedule,
+    description: department.description,
+    image: department.imageUrl || '',
+  }));
 
   return (
     <section id="departements" className="py-12 max-w-3xl mx-auto px-4 sm:px-6">
