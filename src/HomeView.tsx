@@ -89,9 +89,6 @@ export const HomeView: React.FC = () => {
             {/* 9. ÉVÉNEMENTS / HORAIRES DES CULTES */}
             <CultesSpa services={localizedData.servicesCalendar} />
 
-            {/* 10. COMMUNAUTÉ ET BADGES DE LA SEMAINE */}
-            <CommunitySpa />
-
             {/* 11. ADRESSE */}
             <AddressSpa contact={localizedData.meta.contact} />
 
@@ -99,6 +96,8 @@ export const HomeView: React.FC = () => {
             <ContactSpa />
           </>
         )}
+        {/* La communauté se charge indépendamment du reste du contenu Supabase. */}
+        <CommunitySpa />
       </main>
 
       {/* 11. PIED DE PAGE OFFICIEL */}
