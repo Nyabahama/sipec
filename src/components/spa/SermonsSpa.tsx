@@ -180,8 +180,8 @@ export const SermonsSpa: React.FC<SermonsSpaProps> = ({ sermons }) => {
                 className="aspect-video w-full bg-black"
                 controls
                 autoPlay
-                poster={active.thumbnailUrl}
-                src={active.videoUrl}
+                {...(active.thumbnailUrl ? { poster: active.thumbnailUrl } : {})}
+                {...(active.videoUrl ? { src: active.videoUrl } : {})}
               />
               <button
                 aria-label="Fermer"
